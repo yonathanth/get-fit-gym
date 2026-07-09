@@ -28,10 +28,10 @@ export default function PerformanceTrackingSection() {
       <section className="px-4 md:px-6 pt-32 pb-12">
         <div className="w-full max-w-[1200px] mx-auto">
           <div className="max-w-2xl">
-            <span className="text-xs font-black text-primary tracking-[0.3em] uppercase font-sans">
+            <span className="text-xs font-inter font-medium text-primary tracking-[0.2em] uppercase">
               The Platform
             </span>
-            <h2 className="text-4xl md:text-6xl font-impact text-white mt-6 leading-none tracking-tighter uppercase">
+            <h2 className="text-4xl md:text-6xl font-impact text-white mt-6 leading-[1.1] tracking-tight uppercase">
               Everything you need to
               <br />
               track your evolution
@@ -52,11 +52,11 @@ export default function PerformanceTrackingSection() {
                     <span className="material-symbols-outlined text-primary text-4xl">
                       monitoring
                     </span>
-                    <h2 className="text-3xl font-impact text-white tracking-wider uppercase">
+                    <h2 className="text-3xl font-impact text-white tracking-tight uppercase">
                       Performance Tracking
                     </h2>
                   </div>
-                  <p className="text-secondary text-base mb-12 leading-relaxed font-medium">
+                  <p className="text-secondary text-base mb-12 leading-relaxed font-inter">
                     Our integrated environment surfaces biometric patterns and
                     recovery needs, offering data-driven pathways to structure
                     your training for maximum efficiency.
@@ -73,7 +73,7 @@ export default function PerformanceTrackingSection() {
                           }`}
                         ></div>
                         <h3
-                          className={`text-xl font-impact mb-3 tracking-wider transition-colors ${
+                          className={`text-xl font-impact mb-3 tracking-tight uppercase transition-colors ${
                             feature.active
                               ? "text-white group-hover:text-primary"
                               : "text-secondary group-hover:text-primary"
@@ -82,7 +82,7 @@ export default function PerformanceTrackingSection() {
                           {feature.title}
                         </h3>
                         <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-in-out">
-                          <p className="text-sm text-secondary overflow-hidden leading-relaxed pr-4 font-normal">
+                          <p className="text-sm text-secondary overflow-hidden leading-relaxed pr-4 font-inter">
                             {feature.description}
                           </p>
                         </div>

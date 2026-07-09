@@ -35,10 +35,10 @@ export default function MembershipBenefitsSection() {
       <div className="w-full max-w-[1200px] mx-auto">
         {/* Header */}
         <div className="mb-20">
-          <span className="text-xs font-black text-primary tracking-[0.3em] uppercase font-sans">
+          <span className="text-xs font-inter font-medium text-primary tracking-[0.2em] uppercase">
             Membership Benefits
           </span>
-          <h2 className="text-4xl md:text-6xl font-impact text-white mt-6 leading-none tracking-tighter uppercase">
+          <h2 className="text-4xl md:text-6xl font-impact text-white mt-6 leading-[1.1] tracking-tight uppercase">
             Elite programs for
             <br />
             modern performance
@@ -59,10 +59,10 @@ export default function MembershipBenefitsSection() {
               <span className="material-symbols-outlined text-primary text-4xl mt-8">
                 {benefit.icon}
               </span>
-              <h3 className="text-2xl font-impact text-white mb-4 pt-16 tracking-wide uppercase group-hover:text-primary transition-colors">
+              <h3 className="text-2xl font-impact text-white mb-4 pt-16 tracking-tight uppercase group-hover:text-primary transition-colors">
                 {benefit.title}
               </h3>
-              <p className="text-sm text-secondary font-medium leading-relaxed">
+              <p className="text-sm text-secondary font-inter leading-relaxed">
                 {benefit.description}
               </p>
             </div>

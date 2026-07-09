@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Bebas_Neue } from "next/font/google";
+import { Inter, Bebas_Neue, Manrope } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -17,6 +17,13 @@ const bebasNeue = Bebas_Neue({
   display: "swap",
 });
 
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Get Fit - Stronger Life",
   description: "Experience a sanctuary of peak performance. Elite coaching, advanced tracking, and world-class facilities.",
@@ -30,7 +37,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${bebasNeue.variable}`}
+      className={`${inter.variable} ${bebasNeue.variable} ${manrope.variable}`}
     >
       <head>
         <link

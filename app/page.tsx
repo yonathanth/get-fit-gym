@@ -1,16 +1,20 @@
 import HeroSection from "@/components/sections/HeroSection";
-import PerformanceTrackingSection from "@/components/sections/PerformanceTrackingSection";
-import CoachingSection from "@/components/sections/CoachingSection";
-import MembershipBenefitsSection from "@/components/sections/MembershipBenefitsSection";
+import ProgramsSection from "@/components/sections/ProgramsSection";
+import FacilitiesSection from "@/components/sections/FacilitiesSection";
+import TestimonialsSection from "@/components/sections/TestimonialsSection";
+import ContactSection from "@/components/sections/ContactSection";
 import CTASection from "@/components/sections/CTASection";
 
 export default function Home() {
   return (
     <main className="w-full">
       <HeroSection />
-      <PerformanceTrackingSection />
-      <CoachingSection />
-      <MembershipBenefitsSection />
+      <ProgramsSection />
+      <FacilitiesSection />
+      <TestimonialsSection />
+      <div id="contact">
+        <ContactSection />
+      </div>
       <CTASection />
     </main>
   );

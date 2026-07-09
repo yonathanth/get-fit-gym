@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&family=Manrope:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 @import "tailwindcss";
 
@@ -29,6 +29,7 @@
   /* Font Families */
   --font-sans: 'Inter', sans-serif;
   --font-impact: 'Bebas Neue', 'Inter', sans-serif;
+  --font-manrope: 'Manrope', 'Inter', sans-serif;
 
   /* Animations */
   --animate-scroll: scroll 30s linear infinite;
@@ -61,4 +62,12 @@ body {
 
 .text-glow {
   text-shadow: 0 0 20px rgba(217, 151, 43, 0.3);
+}
+
+.font-manrope {
+  font-family: var(--font-manrope);
+}
+
+.font-inter {
+  font-family: var(--font-sans);
 }

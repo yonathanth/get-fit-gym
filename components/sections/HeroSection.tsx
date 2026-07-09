@@ -22,8 +22,8 @@ export default function HeroSection() {
           <div className="w-full h-full rounded-[24px] md:rounded-[32px] overflow-hidden relative border border-white/5">
             <img
               alt="High-end gym space with a focused, powerful atmosphere."
-              className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-1000"
-              src="https://lh3.googleusercontent.com/aida/AP1WRLsiTsrLgaYfZTXAr3ME11BMZv56m_LlB0d5hXVeD8d21kSGJ9W_dHfY-2kY80ivS73iqzWDK099g1GPhtYcx7S8UfIlalynZ-UTBKSHYrcDN-US3y1ptBcQw8WSC-IxlrfGChb5rWbks_PLGbPlejyDPTfrp4ZURc5zA1pB_wz_umOToJwJLHyOdg_eQECa1X-KQbLQ6jeODBH1Z7C0pPsjPHdSnvasRk_GxDZI0hquelg_mmfmaQkBJxQ"
+              className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
+              src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600&h=900&fit=crop&q=80"
             />
             <div className="absolute inset-0 flex items-center justify-center">
               <button className="group flex flex-col items-center gap-2 md:gap-3 transition-transform hover:scale-110">
@@ -32,7 +32,7 @@ export default function HeroSection() {
                     play_arrow
                   </span>
                 </div>
-                <span className="text-white font-medium tracking-wide text-xs md:text-sm drop-shadow-lg uppercase">
+                <span className="text-white font-inter font-medium tracking-wide text-xs md:text-sm drop-shadow-lg uppercase">
                   Play Tour
                 </span>
               </button>
