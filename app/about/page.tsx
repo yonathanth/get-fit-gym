@@ -1,4 +1,9 @@
 import PageHeading from "@/components/sections/PageHeading";
+import OurStorySection from "@/components/sections/OurStorySection";
+import MissionVisionSection from "@/components/sections/MissionVisionSection";
+import OurTeamSection from "@/components/sections/OurTeamSection";
+import OurFacilitySection from "@/components/sections/OurFacilitySection";
+import CommunityEventsSection from "@/components/sections/CommunityEventsSection";
 import CTASection from "@/components/sections/CTASection";
 
 export default function AboutPage() {
@@ -14,22 +19,11 @@ export default function AboutPage() {
         ]}
       />
       
-      {/* Our Story Section - To be built */}
-      <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-20">
-        <h2 className="text-4xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-16">
-          Our <span className="text-primary">Story</span>
-        </h2>
-        {/* Story content will go here */}
-      </section>
-
-      {/* Our Values Section - To be built */}
-      <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-20">
-        <h2 className="text-4xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-16">
-          Our <span className="text-primary">Values</span>
-        </h2>
-        {/* Values content will go here */}
-      </section>
-
+      <OurStorySection />
+      <MissionVisionSection />
+      <OurTeamSection />
+      <OurFacilitySection />
+      <CommunityEventsSection />
       <CTASection />
     </main>
   );

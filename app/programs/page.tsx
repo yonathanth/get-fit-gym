@@ -1,4 +1,6 @@
 import PageHeading from "@/components/sections/PageHeading";
+import MembershipPlansSection from "@/components/sections/MembershipPlansSection";
+import ClassesSection from "@/components/sections/ClassesSection";
 import CTASection from "@/components/sections/CTASection";
 
 export default function ProgramsPage() {
@@ -14,21 +16,11 @@ export default function ProgramsPage() {
         ]}
       />
       
-      {/* Membership Plans Section - To be built */}
-      <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-20">
-        <h2 className="text-4xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-16">
-          Membership <span className="text-primary">Plans</span>
-        </h2>
-        {/* Plans content will go here */}
-      </section>
+      {/* Membership Plans Section */}
+      <MembershipPlansSection />
 
-      {/* Classes Section - To be built */}
-      <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-20">
-        <h2 className="text-4xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-16">
-          Our <span className="text-primary">Classes</span>
-        </h2>
-        {/* Classes content will go here */}
-      </section>
+      {/* Classes Section */}
+      <ClassesSection />
 
       <CTASection />
     </main>

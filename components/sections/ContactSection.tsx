@@ -55,7 +55,7 @@ export default function ContactSection() {
         </div>
 
         {/* Right - Google Map */}
-        <div className="w-full lg:w-[60%] relative rounded-[24px] border border-white/10 overflow-hidden h-[400px] lg:h-[500px]">
+        <div className="w-full lg:w-[60%] relative rounded-[24px] border border-white/10 overflow-hidden h-[300px] lg:h-[400px]">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.5587636447195!2d38.7577!3d9.0320!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOcKwMDEnNTUuMiJOIDM4wrA0NSczMy4xIkU!5e0!3m2!1sen!2set!4v1234567890"
             width="100%"

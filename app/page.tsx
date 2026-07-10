@@ -12,9 +12,7 @@ export default function Home() {
       <ProgramsSection />
       <FacilitiesSection />
       <TestimonialsSection />
-      <div id="contact">
-        <ContactSection />
-      </div>
+      <ContactSection />
       <CTASection />
     </main>
   );

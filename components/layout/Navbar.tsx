@@ -8,7 +8,8 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/programs", label: "Programs" },
   { href: "/about", label: "About" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/events", label: "Events" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Navbar() {
@@ -45,9 +46,11 @@ export default function Navbar() {
 
         {/* CTA Button */}
         <div className="hidden md:flex gap-4 items-center">
-          <button className="bg-primary text-on-primary text-xs font-inter font-bold px-6 py-2.5 rounded-full hover:bg-white transition-all tracking-widest">
-            REGISTER NOW
-          </button>
+          <Link href="/register">
+            <button className="bg-primary text-on-primary text-xs font-inter font-bold px-6 py-2.5 rounded-full hover:bg-white transition-all tracking-widest">
+              REGISTER NOW
+            </button>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
