@@ -9,3 +9,4 @@ export { default as FacilitiesSection } from "./sections/FacilitiesSection";
 export { default as TestimonialsSection } from "./sections/TestimonialsSection";
 export { default as ContactSection } from "./sections/ContactSection";
 export { default as CTASection } from "./sections/CTASection";
+export { default as UpcomingEventsSection } from "./sections/UpcomingEventsSection";

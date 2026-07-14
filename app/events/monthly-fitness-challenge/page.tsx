@@ -1,7 +1,13 @@
+"use client";
+
+import { useState } from "react";
 import PageHeading from "@/components/sections/PageHeading";
+import EventRegistrationModal from "@/components/ui/EventRegistrationModal";
 import CTASection from "@/components/sections/CTASection";
 
 export default function MonthlyFitnessChallengeEvent() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const galleryImages = [
     "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&h=600&fit=crop&q=80",
     "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=600&fit=crop&q=80",
@@ -22,6 +28,28 @@ export default function MonthlyFitnessChallengeEvent() {
           "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=500&fit=crop&q=80"
         ]}
       />
+
+      {/* Book Now CTA - Redesigned Clean & Simple */}
+      <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8">
+        <div className="relative overflow-hidden rounded-[20px] border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div>
+              <h3 className="text-xl md:text-2xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-3">
+                Ready to Join?
+              </h3>
+              <p className="text-sm text-white/60 font-inter">
+                April 5, 2026 <span className="mx-2">•</span> 7:00 AM - 9:00 AM <span className="mx-2">•</span> <span className="text-primary">30 spots available</span>
+              </p>
+            </div>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-primary hover:bg-primary/90 text-black text-sm font-inter font-bold px-8 py-3.5 rounded-lg transition-all tracking-wider uppercase whitespace-nowrap"
+            >
+              Book Now
+            </button>
+          </div>
+        </div>
+      </section>
       
       {/* Event Details */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-20">
@@ -106,6 +134,14 @@ export default function MonthlyFitnessChallengeEvent() {
           </div>
         </div>
       </section>
+
+      {/* Registration Modal */}
+      <EventRegistrationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        eventTitle="Monthly Fitness Challenge"
+        eventDate="April 5, 2026 • 7:00 AM - 9:00 AM"
+      />
 
       <CTASection />
     </main>

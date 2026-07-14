@@ -28,23 +28,23 @@ export default function HealthFitnessNutritionSeminarEvent() {
         ]}
       />
 
-      {/* Book Now CTA Bar */}
+      {/* Book Now CTA - Redesigned Clean & Simple */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8">
-        <div className="relative overflow-hidden rounded-[24px] md:rounded-[32px] border border-primary/30 bg-surface p-6 md:p-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="relative overflow-hidden rounded-[20px] border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
-              <h3 className="text-2xl md:text-3xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-2">
+              <h3 className="text-xl md:text-2xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-3">
                 Ready to Join?
               </h3>
-              <p className="text-sm md:text-base text-white/70 font-inter">
-                March 15, 2026 • 10:00 AM - 12:00 PM • 45 spots available
+              <p className="text-sm text-white/60 font-inter">
+                March 15, 2026 <span className="mx-2">•</span> 10:00 AM - 12:00 PM <span className="mx-2">•</span> <span className="text-primary">45 spots available</span>
               </p>
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-primary text-on-primary text-sm font-inter font-bold px-8 py-4 rounded-full hover:bg-white transition-all tracking-widest whitespace-nowrap"
+              className="bg-primary hover:bg-primary/90 text-black text-sm font-inter font-bold px-8 py-3.5 rounded-lg transition-all tracking-wider uppercase whitespace-nowrap"
             >
-              BOOK NOW
+              Book Now
             </button>
           </div>
         </div>

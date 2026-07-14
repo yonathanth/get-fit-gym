@@ -24,6 +24,8 @@ const events = [
   }
 ];
 
+// Note: These are past events/community showcases, they link to /showcase/ not /events/
+
 export default function CommunityEventsSection() {
   return (
     <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-20">
@@ -35,7 +37,7 @@ export default function CommunityEventsSection() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* First card - spans 2 rows */}
         <Link
-          href={`/events/${events[0].id}`}
+          href={`/showcase/${events[0].id}`}
           className="md:row-span-2 group relative overflow-hidden rounded-[24px] md:rounded-[32px] border border-white/5 bg-surface h-[450px] md:h-full block"
         >
           {/* Image */}
@@ -68,7 +70,7 @@ export default function CommunityEventsSection() {
 
         {/* Second card - normal height */}
         <Link
-          href={`/events/${events[1].id}`}
+          href={`/showcase/${events[1].id}`}
           className="group relative overflow-hidden rounded-[24px] md:rounded-[32px] border border-white/5 bg-surface h-[450px] block"
         >
           <div className="absolute inset-0">
@@ -98,7 +100,7 @@ export default function CommunityEventsSection() {
 
         {/* Third card - spans 2 rows */}
         <Link
-          href={`/events/${events[2].id}`}
+          href={`/showcase/${events[2].id}`}
           className="md:row-span-2 group relative overflow-hidden rounded-[24px] md:rounded-[32px] border border-white/5 bg-surface h-[450px] md:h-full block"
         >
           <div className="absolute inset-0">

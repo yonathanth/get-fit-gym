@@ -19,12 +19,39 @@ export default function RegisterPage() {
     // Membership
     membershipType: "",
     
+    // Trainer (optional)
+    selectedTrainer: "",
+    
     // Classes (optional)
     selectedClasses: [] as string[],
     
     // Health Information
     medicalConditions: ""
   });
+
+  const trainers = [
+    {
+      id: "teshome-bekele",
+      name: "Teshome",
+      role: "Head Coach",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80",
+      specialty: "Elite Training & Performance"
+    },
+    {
+      id: "gabriel-haile",
+      name: "Gabriel",
+      role: "Strength & Conditioning",
+      image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop&q=80",
+      specialty: "Athletic Performance"
+    },
+    {
+      id: "sara-bekele",
+      name: "Sara",
+      role: "Nutrition Specialist",
+      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&q=80",
+      specialty: "Nutrition & Wellness"
+    }
+  ];
 
   const handleClassToggle = (classId: string) => {
     setFormData(prev => ({
@@ -231,6 +258,83 @@ export default function RegisterPage() {
                 </label>
               ))}
             </div>
+          </div>
+
+          {/* Trainer Selection */}
+          <div>
+            <h2 className="text-2xl md:text-3xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-3">
+              Choose Your <span className="text-primary">Trainer</span>
+            </h2>
+            <p className="text-sm text-white/70 font-inter mb-6">
+              Optional: Select a preferred trainer for personalized coaching
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {trainers.map((trainer) => (
+                <label
+                  key={trainer.id}
+                  className={`block relative overflow-hidden rounded-[24px] border cursor-pointer transition-all ${
+                    formData.selectedTrainer === trainer.id
+                      ? "border-primary"
+                      : "border-white/10 hover:border-primary/50"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="trainer"
+                    value={trainer.id}
+                    checked={formData.selectedTrainer === trainer.id}
+                    onChange={(e) => setFormData({ ...formData, selectedTrainer: e.target.value })}
+                    className="sr-only"
+                  />
+                  
+                  <div className="relative">
+                    {/* Trainer Image */}
+                    <div className="relative aspect-[3/4] overflow-hidden">
+                      <img
+                        src={trainer.image}
+                        alt={trainer.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                      
+                      {/* Selected Indicator */}
+                      {formData.selectedTrainer === trainer.id && (
+                        <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                          <svg className="w-5 h-5 text-on-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Trainer Info */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h3 className="text-lg font-impact text-primary leading-[1.1] tracking-tight uppercase mb-1">
+                        {trainer.name}
+                      </h3>
+                      <p className="text-xs text-white/80 font-inter font-semibold mb-1">
+                        {trainer.role}
+                      </p>
+                      <p className="text-xs text-white/60 font-inter">
+                        {trainer.specialty}
+                      </p>
+                    </div>
+                  </div>
+                </label>
+              ))}
+            </div>
+
+            {/* Clear Selection */}
+            {formData.selectedTrainer && (
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, selectedTrainer: "" })}
+                className="mt-4 text-sm text-white/70 hover:text-primary font-inter transition-colors"
+              >
+                Clear trainer selection
+              </button>
+            )}
           </div>
 
           {/* Classes Selection */}
