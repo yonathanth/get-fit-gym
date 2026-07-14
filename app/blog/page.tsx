@@ -9,7 +9,7 @@ const blogPosts = [
     category: "Fitness",
     excerpt: "Discover the fundamental principles of strength training and how to build a solid foundation for your fitness journey.",
     image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop",
-    author: "Teshome Bekele",
+    author: "Teshome",
     date: "January 15, 2026",
     readTime: "5 min read"
   },
@@ -19,7 +19,7 @@ const blogPosts = [
     category: "Nutrition",
     excerpt: "Learn how proper nutrition can enhance your performance and help you achieve your fitness goals faster.",
     image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&auto=format&fit=crop",
-    author: "Sara Bekele",
+    author: "Sara",
     date: "January 10, 2026",
     readTime: "8 min read"
   },
@@ -29,7 +29,7 @@ const blogPosts = [
     category: "Wellness",
     excerpt: "Explore how incorporating yoga into your routine can improve flexibility, reduce injury risk, and speed up recovery.",
     image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop",
-    author: "Bethlehem Girma",
+    author: "Bethlehem",
     date: "January 5, 2026",
     readTime: "6 min read"
   },
@@ -39,7 +39,7 @@ const blogPosts = [
     category: "Training",
     excerpt: "High-Intensity Interval Training can transform your fitness. Learn the science behind HIIT and effective workout protocols.",
     image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop",
-    author: "Gabriel Haile",
+    author: "Gabriel",
     date: "December 28, 2025",
     readTime: "7 min read"
   },
@@ -49,7 +49,7 @@ const blogPosts = [
     category: "Lifestyle",
     excerpt: "Understanding the deep connection between mental health and physical fitness for holistic wellbeing.",
     image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop",
-    author: "Sara Bekele",
+    author: "Sara",
     date: "December 20, 2025",
     readTime: "5 min read"
   },
@@ -59,7 +59,7 @@ const blogPosts = [
     category: "Health",
     excerpt: "Essential tips and techniques to prevent common training injuries and maintain peak performance year-round.",
     image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format&fit=crop",
-    author: "Teshome Bekele",
+    author: "Teshome",
     date: "December 15, 2025",
     readTime: "6 min read"
   }

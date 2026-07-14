@@ -14,24 +14,16 @@ export default function Home() {
   const [showEventPopup, setShowEventPopup] = useState(false);
 
   useEffect(() => {
-    // Check if user has seen the popup today
-    const lastSeen = localStorage.getItem("eventPopupLastSeen");
-    const today = new Date().toDateString();
+    // Show popup after a short delay on every page load
+    const timer = setTimeout(() => {
+      setShowEventPopup(true);
+    }, 1500); // 1.5 second delay after page load
     
-    if (lastSeen !== today) {
-      // Show popup after a short delay
-      const timer = setTimeout(() => {
-        setShowEventPopup(true);
-      }, 1500); // 1.5 second delay after page load
-      
-      return () => clearTimeout(timer);
-    }
+    return () => clearTimeout(timer);
   }, []);
 
   const handleClosePopup = () => {
     setShowEventPopup(false);
-    // Save to localStorage so it doesn't show again today
-    localStorage.setItem("eventPopupLastSeen", new Date().toDateString());
   };
 
   return (
