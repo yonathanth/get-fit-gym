@@ -1,9 +1,9 @@
 export default function HeroSection() {
   return (
     <section className="flex flex-col px-4 md:px-6 py-8 md:py-12" style={{ height: 'calc(100vh - 72px)' }}>
-      <div className="w-full max-w-[1200px] mx-auto flex flex-col justify-center gap-2 h-full">
+      <div className="w-full max-w-[1200px] mx-auto flex flex-col justify-center items-center gap-2 h-full">
         {/* Main Title Area */}
-        <div className="flex flex-col">
+        <div className="flex flex-col items-center text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase italic">
             Strong Mind. Strong Body.{" "}
             <span className="text-primary text-glow block sm:inline">
@@ -11,7 +11,7 @@ export default function HeroSection() {
             </span>
           </h1>
           <div className="max-w-3xl -mt-2">
-            <p className="text-secondary leading-normal font-normal text-base md:text-lg italic max-w-[280px] sm:max-w-none">
+            <p className="text-secondary leading-normal font-normal text-base md:text-lg italic">
               Experience a sanctuary of peak performance.
             </p>
           </div>
