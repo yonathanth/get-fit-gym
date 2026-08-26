@@ -1,0 +1,48 @@
+name: Deploy Get Fit
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script_stop: true
+
+          script: |
+            set -e
+
+            echo "🚀 Starting deployment..."
+
+            cd /home/deploy/apps/getfit
+
+            echo "📥 Pulling latest code..."
+            git fetch origin master
+            git reset --hard origin/master
+
+            echo "📦 Installing dependencies..."
+            npm ci
+
+            echo "🏗️ Building Next.js..."
+            npm run build
+
+            echo "🔄 Starting/reloading PM2..."
+
+            if pm2 describe getfit > /dev/null 2>&1; then
+              pm2 reload getfit --update-env
+            else
+              pm2 start npm --name getfit -- start
+              pm2 save
+            fi
+
+            echo "✅ Deployment completed!"
