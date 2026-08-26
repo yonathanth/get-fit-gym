@@ -15,7 +15,7 @@ export default async function AboutPage() {
   let coaches: any[] = [];
   try {
     coaches = await prisma.teamMember.findMany({
-      where: { isActive: true },
+      where: { isActive: true, category: "MANAGEMENT" },
       orderBy: { displayOrder: "asc" },
     });
   } catch (err) {

@@ -9,13 +9,23 @@ export const revalidate = 0;
 
 export default async function ProgramsPage() {
   let programs: any[] = [];
+  let membershipPlans: any[] = [];
+
   try {
-    programs = await prisma.program.findMany({
-      where: { status: "ACTIVE" },
-      orderBy: { displayOrder: "asc" },
-    });
+    const [fetchedPrograms, fetchedPlans] = await Promise.all([
+      prisma.program.findMany({
+        where: { status: "ACTIVE" },
+        orderBy: { displayOrder: "asc" },
+      }),
+      prisma.membershipPlan.findMany({
+        where: { isActive: true },
+        orderBy: { displayOrder: "asc" },
+      }),
+    ]);
+    programs = fetchedPrograms;
+    membershipPlans = fetchedPlans;
   } catch (err) {
-    console.error("DB programs fetch error in ProgramsPage:", err);
+    console.error("DB fetch error in ProgramsPage:", err);
   }
 
   return (
@@ -31,7 +41,7 @@ export default async function ProgramsPage() {
       />
       
       {/* Membership Plans Section */}
-      <MembershipPlansSection />
+      <MembershipPlansSection plans={membershipPlans} />
 
       {/* Classes Section with live DB records */}
       <ClassesSection programs={programs} />

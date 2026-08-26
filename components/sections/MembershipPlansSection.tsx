@@ -21,7 +21,7 @@ interface PlanItem {
   }[];
 }
 
-const MEMBERSHIP_PLANS: Record<"Any Time (Regular)" | "Happy Hour (20% Off)", PlanItem[]> = {
+const DEFAULT_MEMBERSHIP_PLANS: Record<"Any Time (Regular)" | "Happy Hour (20% Off)", PlanItem[]> = {
   "Any Time (Regular)": [
     {
       id: "gym-only-regular",
@@ -31,7 +31,7 @@ const MEMBERSHIP_PLANS: Record<"Any Time (Regular)" | "Happy Hour (20% Off)", Pl
       pricing: {
         "1-month": { price: "19,500 ETB", period: "/ month" },
         "3-months": { price: "32,800 ETB", period: "/ 3 months" },
-        "6-months": { price: "49,100 ETB", period: "/ 6 months" },
+        "6-months": { price: "49,140 ETB", period: "/ 6 months" },
         "1-year": { price: "70,200 ETB", period: "/ year (Save 40%)" }
       },
       features: [
@@ -51,8 +51,8 @@ const MEMBERSHIP_PLANS: Record<"Any Time (Regular)" | "Happy Hour (20% Off)", Pl
       isPopular: true,
       pricing: {
         "1-month": { price: "27,495 ETB", period: "/ month" },
-        "3-months": { price: "38,600 ETB", period: "/ 3 months" },
-        "6-months": { price: "54,500 ETB", period: "/ 6 months" },
+        "3-months": { price: "38,844 ETB", period: "/ 3 months" },
+        "6-months": { price: "54,600 ETB", period: "/ 6 months" },
         "1-year": { price: "77,200 ETB", period: "/ year (Save 40%)" }
       },
       features: [
@@ -72,8 +72,8 @@ const MEMBERSHIP_PLANS: Record<"Any Time (Regular)" | "Happy Hour (20% Off)", Pl
       isPopular: false,
       pricing: {
         "1-month": { price: "49,530 ETB", period: "/ month" },
-        "3-months": { price: "69,500 ETB", period: "/ 3 months" },
-        "6-months": { price: "98,100 ETB", period: "/ 6 months" },
+        "3-months": { price: "69,920 ETB", period: "/ 3 months" },
+        "6-months": { price: "98,280 ETB", period: "/ 6 months" },
         "1-year": { price: "138,996 ETB", period: "/ year (Save 40%)" }
       },
       features: [
@@ -95,8 +95,8 @@ const MEMBERSHIP_PLANS: Record<"Any Time (Regular)" | "Happy Hour (20% Off)", Pl
       isPopular: false,
       pricing: {
         "1-month": { price: "15,600 ETB", period: "/ month" },
-        "3-months": { price: "26,240 ETB", period: "/ 3 months" },
-        "6-months": { price: "39,280 ETB", period: "/ 6 months" },
+        "3-months": { price: "26,208 ETB", period: "/ 3 months" },
+        "6-months": { price: "39,312 ETB", period: "/ 6 months" },
         "1-year": { price: "56,160 ETB", period: "/ year (Save 40%)" }
       },
       features: [
@@ -116,8 +116,8 @@ const MEMBERSHIP_PLANS: Record<"Any Time (Regular)" | "Happy Hour (20% Off)", Pl
       isPopular: true,
       pricing: {
         "1-month": { price: "22,000 ETB", period: "/ month" },
-        "3-months": { price: "30,880 ETB", period: "/ 3 months" },
-        "6-months": { price: "43,600 ETB", period: "/ 6 months" },
+        "3-months": { price: "30,992 ETB", period: "/ 3 months" },
+        "6-months": { price: "43,680 ETB", period: "/ 6 months" },
         "1-year": { price: "61,776 ETB", period: "/ year (Save 40%)" }
       },
       features: [
@@ -137,8 +137,8 @@ const MEMBERSHIP_PLANS: Record<"Any Time (Regular)" | "Happy Hour (20% Off)", Pl
       isPopular: false,
       pricing: {
         "1-month": { price: "39,624 ETB", period: "/ month" },
-        "3-months": { price: "55,600 ETB", period: "/ 3 months" },
-        "6-months": { price: "78,480 ETB", period: "/ 6 months" },
+        "3-months": { price: "55,960 ETB", period: "/ 3 months" },
+        "6-months": { price: "78,624 ETB", period: "/ 6 months" },
         "1-year": { price: "111,192 ETB", period: "/ year (Save 40%)" }
       },
       features: [
@@ -154,7 +154,11 @@ const MEMBERSHIP_PLANS: Record<"Any Time (Regular)" | "Happy Hour (20% Off)", Pl
   ]
 };
 
-export default function MembershipPlansSection() {
+interface MembershipPlansSectionProps {
+  plans?: any[];
+}
+
+export default function MembershipPlansSection({ plans = [] }: MembershipPlansSectionProps) {
   const [activeTab, setActiveTab] = useState<"Any Time (Regular)" | "Happy Hour (20% Off)">("Any Time (Regular)");
   const [selectedDurations, setSelectedDurations] = useState<Record<string, DurationOption>>({
     "gym-only-regular": "1-month",
@@ -164,6 +168,46 @@ export default function MembershipPlansSection() {
     "gym-spa-happy-hour": "1-month",
     "couple-happy-hour": "1-month",
   });
+
+  // If dynamic plans exist from database, map them:
+  let dynamicPlans = DEFAULT_MEMBERSHIP_PLANS;
+  if (plans && plans.length > 0) {
+    const regularDb = plans.filter((p) => p.category === "REGULAR");
+    const happyDb = plans.filter((p) => p.category === "HAPPY_HOUR");
+
+    if (regularDb.length > 0 || happyDb.length > 0) {
+      dynamicPlans = {
+        "Any Time (Regular)": regularDb.map((p) => ({
+          id: p.slug || p.id,
+          name: p.name,
+          subtitle: p.subtitle || "",
+          isPopular: p.isPopular,
+          pricing: {
+            "1-month": { price: p.price1Month, period: "/ month" },
+            "3-months": { price: p.price3Months, period: "/ 3 months" },
+            "6-months": { price: p.price6Months, period: "/ 6 months" },
+            "1-year": { price: p.price1Year, period: "/ year (Save 40%)" },
+          },
+          features: (p.features || []).map((f: string) => ({ included: true, text: f })),
+        })),
+        "Happy Hour (20% Off)": happyDb.map((p) => ({
+          id: p.slug || p.id,
+          name: p.name,
+          subtitle: p.subtitle || "",
+          isPopular: p.isPopular,
+          pricing: {
+            "1-month": { price: p.price1Month, period: "/ month" },
+            "3-months": { price: p.price3Months, period: "/ 3 months" },
+            "6-months": { price: p.price6Months, period: "/ 6 months" },
+            "1-year": { price: p.price1Year, period: "/ year (Save 40%)" },
+          },
+          features: (p.features || []).map((f: string) => ({ included: true, text: f })),
+        })),
+      };
+    }
+  }
+
+  const currentPlans = dynamicPlans[activeTab] || DEFAULT_MEMBERSHIP_PLANS[activeTab];
 
   const handleDurationChange = (planId: string, duration: DurationOption) => {
     setSelectedDurations((prev) => ({
@@ -213,7 +257,7 @@ export default function MembershipPlansSection() {
 
       {/* Pricing Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
-        {MEMBERSHIP_PLANS[activeTab].map((plan, index) => {
+        {currentPlans.map((plan, index) => {
           const currentDuration = selectedDurations[plan.id] || "1-month";
           const currentPricing = plan.pricing[currentDuration] || plan.pricing["1-month"];
 

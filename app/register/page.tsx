@@ -71,7 +71,32 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function RegisterPage() {
-  const trainers = PLACEHOLDER_TRAINERS;
+  let trainers = PLACEHOLDER_TRAINERS;
+  try {
+    const dbTrainers = await prisma.teamMember.findMany({
+      where: { category: "TRAINER", isActive: true },
+      orderBy: { displayOrder: "asc" },
+    });
+    if (dbTrainers && dbTrainers.length > 0) {
+      trainers = dbTrainers.map((t) => ({
+        id: t.id,
+        slug: t.slug,
+        name: t.name,
+        role: t.role,
+        image: t.imageUrl,
+        imageUrl: t.imageUrl,
+        specialty: (t.specializations || []).join(", ") || t.role,
+        bio: t.bio,
+        fullBio: t.fullBio || t.bio,
+        experience: `${t.experienceYears}+ Years`,
+        experienceText: t.experienceText || `${t.experienceYears}+ Years Experience`,
+        certifications: t.certifications || [],
+        specializations: t.specializations || [],
+      }));
+    }
+  } catch (err) {
+    console.error("DB trainers fetch error in RegisterPage:", err);
+  }
 
   return (
     <main className="w-full min-h-screen bg-background relative overflow-x-clip py-14 sm:py-20">
