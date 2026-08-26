@@ -255,8 +255,8 @@ export default function MembershipPlansSection({ plans = [] }: MembershipPlansSe
         </div>
       </div>
 
-      {/* Pricing Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+      {/* Pricing Cards Grid with Centered Bottom Row */}
+      <div className="flex flex-wrap justify-center gap-6 lg:gap-8 items-stretch">
         {currentPlans.map((plan, index) => {
           const currentDuration = selectedDurations[plan.id] || "1-month";
           const currentPricing = plan.pricing[currentDuration] || plan.pricing["1-month"];
@@ -266,10 +266,10 @@ export default function MembershipPlansSection({ plans = [] }: MembershipPlansSe
               key={plan.id}
               direction="up"
               delay={0.1 + index * 0.08}
-              className="h-full"
+              className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] max-w-[380px] flex flex-col"
             >
               <div
-                className={`h-full rounded-[26px] sm:rounded-[30px] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 relative shadow-2xl ${
+                className={`h-full flex-1 rounded-[26px] sm:rounded-[30px] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 relative shadow-2xl ${
                   plan.isPopular
                     ? "bg-[#141313] border-2 border-primary shadow-[0_0_30px_rgba(217,151,43,0.15)] md:-translate-y-2"
                     : "bg-[#101010] border border-white/10 hover:border-white/25"
