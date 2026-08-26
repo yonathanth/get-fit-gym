@@ -124,9 +124,8 @@ export default function ClassesSection({ programs = [] }: ClassesSectionProps) {
               {/* Class Content Details */}
               <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-6">
                 <div>
-                  <div className="flex items-center justify-between text-xs font-inter text-primary mb-2 font-medium">
+                  <div className="text-xs font-inter text-primary mb-2 font-medium">
                     <span>{item.category}</span>
-                    {item.price && <span className="text-white/75">{item.price}</span>}
                   </div>
 
                   <h3 className="text-2xl sm:text-3xl font-impact text-white leading-[1.1] uppercase tracking-wide group-hover:text-primary transition-colors mb-3">
