@@ -1,32 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Bebas_Neue, Manrope } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const bebasNeue = Bebas_Neue({
-  variable: "--font-bebas",
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
+import EventPopupModal from "@/components/ui/EventPopupModal";
 
 export const metadata: Metadata = {
-  title: "Get Fit - Stronger Life",
-  description: "Experience a sanctuary of peak performance. Elite coaching, advanced tracking, and world-class facilities.",
+  title: "Get Fit Gym - Science-Backed Health & Fitness Center",
+  description: "A Science-Backed, Experience-Driven Holistic Health and Fitness Center in Addis Ababa. 1,050 m² Life Fitness arena, 750 m² Spa & Wellness center, and clinical nutrition support.",
 };
 
 export default function RootLayout({
@@ -35,11 +15,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${bebasNeue.variable} ${manrope.variable}`}
-    >
+    <html lang="en" className="dark">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
           rel="stylesheet"
@@ -49,6 +32,7 @@ export default function RootLayout({
         <Navbar />
         {children}
         <Footer />
+        <EventPopupModal />
       </body>
     </html>
   );

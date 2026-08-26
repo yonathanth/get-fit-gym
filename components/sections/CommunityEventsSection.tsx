@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import ScrollReveal from "@/components/ui/ScrollReveal";
 
 const events = [
   {
@@ -24,109 +27,59 @@ const events = [
   }
 ];
 
-// Note: These are past events/community showcases, they link to /showcase/ not /events/
-
 export default function CommunityEventsSection() {
   return (
-    <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-20">
-      <h2 className="text-4xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-12 text-center">
-        Community & <span className="text-primary">Events</span>
-      </h2>
+    <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-16 sm:py-20 md:py-28">
+      <ScrollReveal direction="up" delay={0.1}>
+        <h2 className="text-3xl sm:text-4xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-8 sm:mb-12 text-center">
+          Community & <span className="text-primary">Events</span>
+        </h2>
+      </ScrollReveal>
 
-      {/* Masonry-style Layout - Same as Facilities */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* First card - spans 2 rows */}
-        <Link
-          href={`/showcase/${events[0].id}`}
-          className="md:row-span-2 group relative overflow-hidden rounded-[24px] md:rounded-[32px] border border-white/5 bg-surface h-[450px] md:h-full block"
-        >
-          {/* Image */}
-          <div className="absolute inset-0">
-            <img
-              src={events[0].image}
-              alt={events[0].title}
-              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
-          </div>
+      {/* Events Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+        {events.map((event, index) => (
+          <ScrollReveal
+            key={event.id}
+            direction="up"
+            delay={0.15 + index * 0.1}
+          >
+            <Link
+              href={`/showcase/${event.id}`}
+              className="group relative overflow-hidden rounded-[22px] sm:rounded-[28px] md:rounded-[32px] border border-white/10 hover:border-primary/40 bg-surface h-[380px] sm:h-[420px] md:h-[450px] block shine-hover shadow-xl transition-all duration-300"
+            >
+              {/* Image */}
+              <div className="absolute inset-0">
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
+              </div>
 
-          {/* Blur overlay and See More button - appears on hover */}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <span className="text-primary font-impact text-2xl md:text-3xl uppercase tracking-tight">
-              SEE MORE
-            </span>
-          </div>
+              {/* Hover Blur Overlay */}
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <span className="text-primary font-impact text-xl sm:text-2xl uppercase tracking-tight">
+                  SEE MORE
+                </span>
+              </div>
 
-          {/* Content - always visible */}
-          <div className="relative h-full p-8 flex flex-col justify-end pointer-events-none">
-            <h3 className="text-2xl md:text-3xl font-impact text-primary leading-[1.1] tracking-tight uppercase mb-3">
-              {events[0].title}
-            </h3>
-            <p className="text-sm md:text-base text-white/80 font-inter leading-relaxed">
-              {events[0].description}
-            </p>
-          </div>
-        </Link>
-
-        {/* Second card - normal height */}
-        <Link
-          href={`/showcase/${events[1].id}`}
-          className="group relative overflow-hidden rounded-[24px] md:rounded-[32px] border border-white/5 bg-surface h-[450px] block"
-        >
-          <div className="absolute inset-0">
-            <img
-              src={events[1].image}
-              alt={events[1].title}
-              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
-          </div>
-
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <span className="text-primary font-impact text-2xl md:text-3xl uppercase tracking-tight">
-              SEE MORE
-            </span>
-          </div>
-
-          <div className="relative h-full p-8 flex flex-col justify-end pointer-events-none">
-            <h3 className="text-2xl md:text-3xl font-impact text-primary leading-[1.1] tracking-tight uppercase mb-3">
-              {events[1].title}
-            </h3>
-            <p className="text-sm md:text-base text-white/80 font-inter leading-relaxed">
-              {events[1].description}
-            </p>
-          </div>
-        </Link>
-
-        {/* Third card - spans 2 rows */}
-        <Link
-          href={`/showcase/${events[2].id}`}
-          className="md:row-span-2 group relative overflow-hidden rounded-[24px] md:rounded-[32px] border border-white/5 bg-surface h-[450px] md:h-full block"
-        >
-          <div className="absolute inset-0">
-            <img
-              src={events[2].image}
-              alt={events[2].title}
-              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
-          </div>
-
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <span className="text-primary font-impact text-2xl md:text-3xl uppercase tracking-tight">
-              SEE MORE
-            </span>
-          </div>
-
-          <div className="relative h-full p-8 flex flex-col justify-end pointer-events-none">
-            <h3 className="text-2xl md:text-3xl font-impact text-primary leading-[1.1] tracking-tight uppercase mb-3">
-              {events[2].title}
-            </h3>
-            <p className="text-sm md:text-base text-white/80 font-inter leading-relaxed">
-              {events[2].description}
-            </p>
-          </div>
-        </Link>
+              {/* Content pinned at bottom */}
+              <div className="relative h-full p-6 sm:p-8 flex flex-col justify-end pointer-events-none z-10">
+                <span className="text-xs font-inter font-semibold text-primary/90 mb-1 block">
+                  {event.date}
+                </span>
+                <h3 className="text-2xl sm:text-3xl font-impact text-primary leading-[1.1] tracking-tight uppercase mb-2 group-hover:text-white transition-colors">
+                  {event.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-white/80 font-inter leading-relaxed line-clamp-2">
+                  {event.description}
+                </p>
+              </div>
+            </Link>
+          </ScrollReveal>
+        ))}
       </div>
     </section>
   );

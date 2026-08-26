@@ -1,30 +1,30 @@
 const benefits = [
   {
     icon: "fitness_center",
-    title: "Personal Training",
+    title: "1,050 m² Life Fitness",
     description:
-      "Receive dedicated guidance from elite coaches to accelerate your strength and body composition goals.",
+      "Internationally recognized Life Fitness equipment and expansive training halls for optimal strength and cardio.",
     featured: true,
   },
   {
+    icon: "spa",
+    title: "750 m² Spa & Wellness",
+    description:
+      "Steam, sauna, Moroccan bath, massage, and reflexology amenities for deep post-workout restoration.",
+    featured: false,
+  },
+  {
+    icon: "medical_services",
+    title: "Doctor & Nutritionist",
+    description:
+      "Comprehensive medical health consultations and personalized diet plans tailored around your health status.",
+    featured: false,
+  },
+  {
     icon: "groups",
-    title: "Group Classes",
+    title: "Level-Based Classes",
     description:
-      "From Power Yoga to Olympic Lifting, our high-energy classes are designed for all experience levels.",
-    featured: false,
-  },
-  {
-    icon: "self_improvement",
-    title: "Recovery Suite",
-    description:
-      "Cold plunges, infrared saunas, and compression therapy to ensure your body repairs as hard as it works.",
-    featured: false,
-  },
-  {
-    icon: "restaurant",
-    title: "Nutrition Planning",
-    description:
-      "Data-backed meal strategies and supplementation guidance to fuel your daily grind and long-term health.",
+      "14 dynamic activities across 3 time-slots tailored to your fitness level for motivating, results-driven training.",
     featured: false,
   },
 ];

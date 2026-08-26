@@ -1,0 +1,194 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SUPERADMIN
+}
+
+enum ClientStatus {
+  PENDING
+  CONFIRMED
+  ACTIVE
+  CANCELLED
+}
+
+enum ProgramStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum EventStatus {
+  UPCOMING
+  COMPLETED
+  CANCELLED
+}
+
+enum InquiryStatus {
+  UNREAD
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  username     String    @unique
+  name         String
+  email        String?   @unique
+  passwordHash String
+  role         Role      @default(ADMIN)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Client {
+  id               String       @id @default(cuid())
+  name             String
+  email            String
+  phone            String
+  age              Int?
+  emergencyContact String?
+  preferredProgram String
+  membershipTier   String       @default("Standard")
+  status           ClientStatus @default(PENDING)
+  notes            String?
+  registeredAt     DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([status])
+  @@index([preferredProgram])
+}
+
+model Program {
+  id           String        @id @default(cuid())
+  name         String
+  category     String
+  description  String
+  imageUrl     String
+  schedule     String
+  capacity     Int           @default(20)
+  instructor   String
+  intensity    String        @default("Intermediate")
+  price        String?
+  features     String[]      @default([])
+  status       ProgramStatus @default(ACTIVE)
+  displayOrder Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([status])
+}
+
+model TeamMember {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  name            String
+  role            String
+  bio             String
+  fullBio         String?
+  imageUrl        String
+  specializations String[]
+  certifications  String[] @default([])
+  experienceYears Int      @default(5)
+  experienceText  String?  @default("5+ Years")
+  email           String?
+  phone           String?
+  instagram       String?
+  facebook        String?
+  linkedin        String?
+  tiktok          String?
+  displayOrder    Int      @default(0)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model UpcomingEvent {
+  id              String      @id @default(cuid())
+  title           String
+  slug            String      @unique
+  eventDate       DateTime
+  dateString      String?
+  timeString      String
+  location        String      @default("Get Fit Gym Arena")
+  description     String
+  paragraphs      String[]    @default([])
+  imageUrl        String
+  galleryUrls     String[]    @default([])
+  totalSpots      Int         @default(50)
+  remainingSpots  Int         @default(50)
+  isPopupFeatured Boolean     @default(false)
+  status          EventStatus @default(UPCOMING)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([isPopupFeatured])
+  @@index([status])
+}
+
+model CommunityShowcase {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  eventDate     String
+  location      String   @default("Full Facility Arena")
+  attendees     Int      @default(50)
+  category      String   @default("Community")
+  description   String
+  paragraphs    String[] @default([])
+  coverImageUrl String
+  galleryUrls   String[]
+  highlights    String[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model BlogPost {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  category      String
+  excerpt       String
+  content       String
+  coverImageUrl String
+  authorName    String
+  authorRole    String
+  readTime      String   @default("5 min read")
+  isPublished   Boolean  @default(true)
+  publishedAt   DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([category])
+  @@index([isPublished])
+}
+
+model Inquiry {
+  id           String        @id @default(cuid())
+  name         String
+  email        String
+  phone        String
+  subject      String?
+  message      String
+  status       InquiryStatus @default(UNREAD)
+  repliedNotes String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([status])
+}
+
+model GymSetting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+}

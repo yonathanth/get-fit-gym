@@ -2,13 +2,27 @@ import PageHeading from "@/components/sections/PageHeading";
 import MembershipPlansSection from "@/components/sections/MembershipPlansSection";
 import ClassesSection from "@/components/sections/ClassesSection";
 import CTASection from "@/components/sections/CTASection";
+import { prisma } from "@/lib/prisma";
 
-export default function ProgramsPage() {
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function ProgramsPage() {
+  let programs: any[] = [];
+  try {
+    programs = await prisma.program.findMany({
+      where: { status: "ACTIVE" },
+      orderBy: { displayOrder: "asc" },
+    });
+  } catch (err) {
+    console.error("DB programs fetch error in ProgramsPage:", err);
+  }
+
   return (
     <main className="w-full">
       <PageHeading 
-        title="Programs" 
-        subtitle="Discover our comprehensive range of fitness programs designed to help you achieve your goals, from youth development to elite strength training."
+        title="Programs & Memberships" 
+        subtitle="Explore our science-backed training programs, 14 level-based group classes across 3 time-slots, and pre-opening membership packages."
         images={[
           "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&h=1000&fit=crop&q=80",
           "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=500&fit=crop&q=80",
@@ -19,8 +33,8 @@ export default function ProgramsPage() {
       {/* Membership Plans Section */}
       <MembershipPlansSection />
 
-      {/* Classes Section */}
-      <ClassesSection />
+      {/* Classes Section with live DB records */}
+      <ClassesSection programs={programs} />
 
       <CTASection />
     </main>

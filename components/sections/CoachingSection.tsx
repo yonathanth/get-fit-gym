@@ -2,21 +2,21 @@
 
 const coachingFeatures = [
   {
-    title: "Personal Training",
+    title: "Sports Science Leadership",
     description:
-      "One-on-one sessions tailored to your specific biomechanics and athletic history.",
+      "Led by founders holding BSc in Sports Science & MSc in Exercise Physiology with over 20 years coaching experience.",
     active: true,
   },
   {
-    title: "Group Dynamics",
+    title: "Over 20 Skilled Trainers",
     description:
-      "High-intensity classes led by experts, designed to foster community and push intensity.",
+      "A dedicated team of knowledgeable professional coaches providing continuous technique guidance.",
     active: false,
   },
   {
-    title: "Nutrition Strategy",
+    title: "Level-Based Progression",
     description:
-      "Holistic meal planning that fuels your performance and optimizes your recovery.",
+      "Tailored workout programming grouped according to your exact physical fitness level.",
     active: false,
   },
 ];
@@ -29,12 +29,12 @@ export default function CoachingSection() {
         <div className="w-full max-w-[1200px] mx-auto">
           <div className="max-w-2xl">
             <span className="text-xs font-inter font-medium text-primary tracking-[0.2em] uppercase">
-              Human Element
+              Coaching Excellence
             </span>
             <h2 className="text-4xl md:text-6xl font-impact text-white mt-6 leading-[1.1] tracking-tight uppercase">
-              Master your craft with
+              Science-backed guidance from
               <br />
-              elite-level coaching
+              over 20 expert coaches
             </h2>
           </div>
         </div>
@@ -53,13 +53,11 @@ export default function CoachingSection() {
                       sports_gymnastics
                     </span>
                     <h2 className="text-3xl font-impact text-white tracking-tight uppercase">
-                      Elite Coaching
+                      Expert Coaching Team
                     </h2>
                   </div>
                   <p className="text-secondary text-base mb-12 leading-relaxed font-inter">
-                    Access a roster of trainers with professional athlete
-                    experience. Our method combines old-school grit with modern
-                    scientific principles to transform your physique.
+                    Access over 20 skilled and knowledgeable coaches led by exercise physiology and sports science specialists. We turn repetitive gym workouts into an engaging, motivating, and highly effective transformation.
                   </p>
                 </div>
 

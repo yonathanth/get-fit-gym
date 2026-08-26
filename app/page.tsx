@@ -1,6 +1,3 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import HeroSection from "@/components/sections/HeroSection";
 import ProgramsSection from "@/components/sections/ProgramsSection";
 import FacilitiesSection from "@/components/sections/FacilitiesSection";
@@ -8,36 +5,28 @@ import UpcomingEventsSection from "@/components/sections/UpcomingEventsSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import ContactSection from "@/components/sections/ContactSection";
 import CTASection from "@/components/sections/CTASection";
-import EventPopupModal from "@/components/ui/EventPopupModal";
+import SpotlightEffect from "@/components/ui/SpotlightEffect";
+import { prisma } from "@/lib/prisma";
 
-export default function Home() {
-  const [showEventPopup, setShowEventPopup] = useState(false);
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-  useEffect(() => {
-    // Show popup after a short delay on every page load
-    const timer = setTimeout(() => {
-      setShowEventPopup(true);
-    }, 1500); // 1.5 second delay after page load
-    
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleClosePopup = () => {
-    setShowEventPopup(false);
-  };
+export default async function Home() {
+  const events = await prisma.upcomingEvent.findMany({
+    where: { status: "UPCOMING" },
+    orderBy: { eventDate: "asc" },
+  });
 
   return (
-    <main className="w-full">
+    <main className="w-full relative overflow-x-clip">
+      <SpotlightEffect />
       <HeroSection />
       <ProgramsSection />
       <FacilitiesSection />
       <TestimonialsSection />
-      <UpcomingEventsSection />
+      <UpcomingEventsSection events={events} />
       <ContactSection />
       <CTASection />
-      
-      {/* Event Popup Modal */}
-      {showEventPopup && <EventPopupModal onClose={handleClosePopup} />}
     </main>
   );
 }

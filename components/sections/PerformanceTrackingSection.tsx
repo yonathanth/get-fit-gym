@@ -2,21 +2,21 @@
 
 const trackingFeatures = [
   {
-    title: "Set Your Goals",
+    title: "Body Composition Scan",
     description:
-      "Define hypertrophy, endurance, or functional mobility targets to align your program.",
+      "Before starting training, body fat, muscle mass, and baseline health conditions are measured in detail.",
     active: true,
   },
   {
-    title: "Biometric Insights",
+    title: "Level-Based Grouping",
     description:
-      "Monitor HRV, sleep quality, and metabolic rate to optimize training intensity and recovery cycles.",
+      "Members are grouped by fitness levels to receive matched, progressively challenging workouts.",
     active: false,
   },
   {
-    title: "Progress at Scale",
+    title: "Nutritional & Medical Tracking",
     description:
-      "Leverage historical data to predict plateaus and adjust loading parameters before they happen.",
+      "Personalized nutrition and medical tracking tailored around your specific health status and goals.",
     active: false,
   },
 ];
@@ -29,12 +29,12 @@ export default function PerformanceTrackingSection() {
         <div className="w-full max-w-[1200px] mx-auto">
           <div className="max-w-2xl">
             <span className="text-xs font-inter font-medium text-primary tracking-[0.2em] uppercase">
-              The Platform
+              Scientific Methodology
             </span>
             <h2 className="text-4xl md:text-6xl font-impact text-white mt-6 leading-[1.1] tracking-tight uppercase">
-              Everything you need to
+              Scientific assessment &
               <br />
-              track your evolution
+              level-based progression
             </h2>
           </div>
         </div>
@@ -53,13 +53,11 @@ export default function PerformanceTrackingSection() {
                       monitoring
                     </span>
                     <h2 className="text-3xl font-impact text-white tracking-tight uppercase">
-                      Performance Tracking
+                      Scientific Tracking
                     </h2>
                   </div>
                   <p className="text-secondary text-base mb-12 leading-relaxed font-inter">
-                    Our integrated environment surfaces biometric patterns and
-                    recovery needs, offering data-driven pathways to structure
-                    your training for maximum efficiency.
+                    Every member begins with a detailed physical condition assessment. Our sports science methodology combines biometric body composition testing with medical and nutritional tracking to ensure safe, measurable progress.
                   </p>
                 </div>
 

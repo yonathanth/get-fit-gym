@@ -1,240 +1,284 @@
 "use client";
 
 import { useState } from "react";
-import MembershipFlipCard from "@/components/ui/MembershipFlipCard";
+import Link from "next/link";
+import ScrollReveal from "@/components/ui/ScrollReveal";
 
-type Plan = {
+interface PlanItem {
+  id: string;
   name: string;
-  description: string;
-  image: string;
+  subtitle: string;
   price: string;
-  duration: string;
-  features: string[];
-};
+  period: string;
+  annualPrice?: string;
+  isPopular?: boolean;
+  features: {
+    included: boolean;
+    text: string;
+  }[];
+}
 
-const membershipPlans = {
-  "Kids & Teens": [
+const MEMBERSHIP_PLANS: Record<"Any Time (Regular)" | "Happy Hour (20% Off)", PlanItem[]> = {
+  "Any Time (Regular)": [
     {
-      name: "General Fitness",
-      description: "Build foundational fitness habits with fun, engaging exercises designed for young athletes.",
-      image: "https://images.unsplash.com/photo-1599447332490-d839c2a3f337?w=600&h=400&fit=crop&q=80",
-      price: "1,500 ETB",
-      duration: "month",
+      id: "gym-only-regular",
+      name: "Gym Only",
+      subtitle: "Full 1,050 m² training floor & level-based group classes",
+      price: "19,500 ETB",
+      period: "/ month",
+      annualPrice: "1-Yr Pass: 70,200 ETB (Save 40%)",
+      isPopular: false,
       features: [
-        "3 sessions per week",
-        "Age-appropriate equipment",
-        "Fun group activities",
-        "Progress tracking",
-        "Certified youth trainers"
+        { included: true, text: "1,050 m² Life Fitness equipment access" },
+        { included: true, text: "14 level-based group fitness classes" },
+        { included: true, text: "Standard locker room & shower amenities" },
+        { included: true, text: "Detailed initial fitness assessment" },
+        { included: true, text: "Pre-opening discounts (3 Mo: 32.8k, 6 Mo: 49.1k)" },
+        { included: false, text: "Full 750 m² Spa & Moroccan bath access" },
+        { included: false, text: "Medical doctor & nutritionist consultation" }
       ]
     },
     {
-      name: "Strength Training",
-      description: "Age-appropriate strength building programs to develop power and confidence.",
-      image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&h=400&fit=crop&q=80",
-      price: "1,800 ETB",
-      duration: "month",
+      id: "gym-spa-regular",
+      name: "Gym With Spa",
+      subtitle: "All-inclusive training floor, group classes & luxury recovery center",
+      price: "27,495 ETB",
+      period: "/ month",
+      annualPrice: "1-Yr Pass: 77,200 ETB (Save 40%)",
+      isPopular: true,
       features: [
-        "4 sessions per week",
-        "Safe strength protocols",
-        "Body weight exercises",
-        "Form coaching",
-        "Nutrition guidance"
+        { included: true, text: "Full 1,050 m² Life Fitness arena access" },
+        { included: true, text: "Unlimited 750 m² Spa, steam & sauna" },
+        { included: true, text: "Moroccan bath & massage therapy access" },
+        { included: true, text: "14 level-based group fitness activities" },
+        { included: true, text: "Detailed body composition scan & tracking" },
+        { included: true, text: "Nutritionist & medical doctor consultation" },
+        { included: true, text: "Priority executive locker & towel service" }
       ]
     },
     {
-      name: "Kickboxing",
-      description: "High-energy martial arts training that builds discipline, coordination, and self-defense skills.",
-      image: "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=600&h=400&fit=crop&q=80",
-      price: "2,000 ETB",
-      duration: "month",
+      id: "couple-regular",
+      name: "Couple Package (10% Off)",
+      subtitle: "Dual all-inclusive membership with 10% couples discount",
+      price: "49,530 ETB",
+      period: "/ month",
+      annualPrice: "1-Yr Pass: 138,996 ETB (Save 40%)",
+      isPopular: false,
       features: [
-        "3 sessions per week",
-        "Self-defense techniques",
-        "Discipline training",
-        "Belt progression system",
-        "Competition opportunities"
-      ]
-    },
-    {
-      name: "Gymnastics",
-      description: "Develop flexibility, balance, and body control through structured gymnastics training.",
-      image: "https://images.unsplash.com/photo-1518644730709-0835105d9daa?w=600&h=400&fit=crop&q=80",
-      price: "2,200 ETB",
-      duration: "month",
-      features: [
-        "3 sessions per week",
-        "Professional equipment",
-        "Flexibility training",
-        "Balance development",
-        "Performance showcases"
-      ]
-    },
-    {
-      name: "Taekwondo",
-      description: "Traditional martial arts focused on discipline, respect, and powerful kicking techniques.",
-      image: "https://images.unsplash.com/photo-1555597408-26bc8e548a46?w=600&h=400&fit=crop&q=80",
-      price: "1,800 ETB",
-      duration: "month",
-      features: [
-        "3 sessions per week",
-        "Traditional forms (Poomsae)",
-        "Sparring practice",
-        "Belt ranking system",
-        "Values & ethics training"
-      ]
-    },
-    {
-      name: "Dance Fitness",
-      description: "Fun and energetic dance classes that improve rhythm, coordination, and cardiovascular health.",
-      image: "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=600&h=400&fit=crop&q=80",
-      price: "1,500 ETB",
-      duration: "month",
-      features: [
-        "3 sessions per week",
-        "Multiple dance styles",
-        "Cardio workouts",
-        "Choreography training",
-        "Performance opportunities"
+        { included: true, text: "2-person all-inclusive Gym & Spa pass" },
+        { included: true, text: "1,050 m² training area + 750 m² wellness center" },
+        { included: true, text: "Unlimited steam, sauna & Moroccan bath" },
+        { included: true, text: "14 level-based group classes for both" },
+        { included: true, text: "Dual body composition & health evaluations" },
+        { included: true, text: "Personalized nutrition strategies" },
+        { included: true, text: "Restaurant & beauty salon discounts" }
       ]
     }
   ],
-  "Adult": [
+  "Happy Hour (20% Off)": [
     {
-      name: "Zumba Dance",
-      description: "Latin-inspired dance workout that combines high-energy music with easy-to-follow moves.",
-      image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&h=400&fit=crop&q=80",
-      price: "1,800 ETB",
-      duration: "month",
+      id: "gym-only-happy-hour",
+      name: "Gym Only (Happy Hour)",
+      subtitle: "Off-peak training floor access with 20% discount",
+      price: "15,600 ETB",
+      period: "/ month",
+      annualPrice: "1-Yr Pass: 56,160 ETB (Save 40%)",
+      isPopular: false,
       features: [
-        "Unlimited classes",
-        "High-energy music",
-        "Calorie-burning workout",
-        "Fun group atmosphere",
-        "No dance experience needed"
+        { included: true, text: "Off-peak 1,050 m² Life Fitness area access" },
+        { included: true, text: "14 level-based group fitness classes" },
+        { included: true, text: "Standard locker room & shower amenities" },
+        { included: true, text: "Baseline fitness level assessment" },
+        { included: true, text: "Pre-opening savings (3 Mo: 26.2k, 6 Mo: 39.3k)" },
+        { included: false, text: "Spa & Moroccan bath access" },
+        { included: false, text: "Medical doctor consultation" }
       ]
     },
     {
-      name: "Circuit Training",
-      description: "Intense full-body workout rotating through different exercise stations for maximum results.",
-      image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=400&fit=crop&q=80",
-      price: "2,500 ETB",
-      duration: "month",
+      id: "gym-spa-happy-hour",
+      name: "Gym With Spa (Happy Hour)",
+      subtitle: "Off-peak Gym & Spa luxury recovery with 20% savings",
+      price: "22,000 ETB",
+      period: "/ month",
+      annualPrice: "1-Yr Pass: 61,776 ETB (Save 40%)",
+      isPopular: true,
       features: [
-        "5 sessions per week",
-        "Full-body conditioning",
-        "Varied exercise stations",
-        "High-intensity intervals",
-        "Results-focused programming"
+        { included: true, text: "Off-peak 1,050 m² Life Fitness arena access" },
+        { included: true, text: "750 m² Spa, steam, sauna & Moroccan bath" },
+        { included: true, text: "Detailed body composition & health tracking" },
+        { included: true, text: "14 level-based group classes" },
+        { included: true, text: "Nutritionist consultation session" },
+        { included: true, text: "Priority executive locker & shower access" },
+        { included: true, text: "Pre-opening rates (3 Mo: 30.9k, 6 Mo: 43.6k)" }
       ]
     },
     {
-      name: "Metabolic Training",
-      description: "High-intensity workouts designed to boost metabolism and burn fat efficiently.",
-      image: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=600&h=400&fit=crop&q=80",
-      price: "2,800 ETB",
-      duration: "month",
+      id: "couple-happy-hour",
+      name: "Couple Happy Hour",
+      subtitle: "Off-peak dual Gym & Spa package with combined discounts",
+      price: "39,624 ETB",
+      period: "/ month",
+      annualPrice: "1-Yr Pass: 111,192 ETB (Save 40%)",
+      isPopular: false,
       features: [
-        "4 sessions per week",
-        "HIIT workouts",
-        "Metabolism boosting",
-        "Fat burning focus",
-        "Personalized intensity levels"
-      ]
-    },
-    {
-      name: "Special Weight Loss Program",
-      description: "Comprehensive program combining cardio, strength, and nutrition guidance for sustainable weight loss.",
-      image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&h=400&fit=crop&q=80",
-      price: "3,500 ETB",
-      duration: "month",
-      features: [
-        "Unlimited access",
-        "Nutrition consultation",
-        "Body composition tracking",
-        "Personal coaching",
-        "Meal planning support"
-      ]
-    },
-    {
-      name: "Get Fit Toning",
-      description: "Sculpt and tone your body with targeted exercises for definition and strength.",
-      image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&h=400&fit=crop&q=80",
-      price: "2,200 ETB",
-      duration: "month",
-      features: [
-        "4 sessions per week",
-        "Muscle toning focus",
-        "Light weights & resistance",
-        "Body sculpting",
-        "Definition training"
-      ]
-    },
-    {
-      name: "Outdoor Training",
-      description: "Take your workout outside with fresh air, natural terrain, and functional fitness movements.",
-      image: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=600&h=400&fit=crop&q=80",
-      price: "2,000 ETB",
-      duration: "month",
-      features: [
-        "3 sessions per week",
-        "Fresh air workouts",
-        "Natural terrain training",
-        "Functional movements",
-        "Small group sessions"
+        { included: true, text: "2-person off-peak Gym & Spa all-inclusive" },
+        { included: true, text: "Unlimited steam, sauna & Moroccan bath" },
+        { included: true, text: "Dual body composition assessments" },
+        { included: true, text: "14 level-based group classes for both" },
+        { included: true, text: "Nutrition consultation & dietary review" },
+        { included: true, text: "Restaurant & beauty salon discounts" },
+        { included: true, text: "Pre-opening rates (3 Mo: 55.9k, 6 Mo: 78.6k)" }
       ]
     }
   ]
 };
 
 export default function MembershipPlansSection() {
-  const [activeTab, setActiveTab] = useState<"Kids & Teens" | "Adult">("Kids & Teens");
+  const [activeTab, setActiveTab] = useState<"Any Time (Regular)" | "Happy Hour (20% Off)">("Any Time (Regular)");
 
   return (
-    <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-20">
-      <h2 className="text-4xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-12 text-center">
-        Membership <span className="text-primary">Plans</span>
-      </h2>
+    <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-16 sm:py-24">
+      <ScrollReveal direction="up" delay={0.1}>
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-3">
+            Membership <span className="text-primary">Plans</span>
+          </h2>
+          <p className="text-xs sm:text-sm md:text-base text-white/70 font-inter">
+            Family & Friends Pre-Opening Discount. Flexible options for 1 Year, 6 Months, 3 Months, 1 Month, and Day Pass.
+          </p>
+        </div>
+      </ScrollReveal>
 
-      {/* Tabs - Unified Card */}
-      <div className="flex justify-center mb-12">
-        <div className="inline-flex bg-surface border border-white/10 rounded-full p-1.5 relative">
-          {/* Animated background slider */}
-          <div
-            className="absolute top-1.5 bottom-1.5 bg-primary rounded-full transition-all duration-300 ease-in-out"
-            style={{
-              left: activeTab === "Kids & Teens" ? "6px" : "50%",
-              width: activeTab === "Kids & Teens" ? "calc(50% - 6px)" : "calc(50% - 6px)",
-            }}
-          />
-          
+      {/* Tab Switcher */}
+      <div className="flex justify-center mb-12 sm:mb-16">
+        <div className="inline-flex bg-[#141313] border border-white/10 rounded-full p-1.5 relative shadow-lg">
           <button
-            onClick={() => setActiveTab("Kids & Teens")}
-            className={`relative z-10 px-8 py-2.5 rounded-full font-inter font-semibold text-sm tracking-wide transition-colors duration-300 ${
-              activeTab === "Kids & Teens"
-                ? "text-on-primary"
-                : "text-secondary hover:text-white"
+            onClick={() => setActiveTab("Any Time (Regular)")}
+            className={`relative z-10 px-5 sm:px-8 py-2.5 rounded-full font-inter font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 cursor-pointer ${
+              activeTab === "Any Time (Regular)"
+                ? "bg-primary text-black shadow-md"
+                : "text-white/70 hover:text-white"
             }`}
           >
-            KIDS & TEENS
+            Regular (Any Time)
           </button>
           <button
-            onClick={() => setActiveTab("Adult")}
-            className={`relative z-10 px-8 py-2.5 rounded-full font-inter font-semibold text-sm tracking-wide transition-colors duration-300 ${
-              activeTab === "Adult"
-                ? "text-on-primary"
-                : "text-secondary hover:text-white"
+            onClick={() => setActiveTab("Happy Hour (20% Off)")}
+            className={`relative z-10 px-5 sm:px-8 py-2.5 rounded-full font-inter font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 cursor-pointer ${
+              activeTab === "Happy Hour (20% Off)"
+                ? "bg-primary text-black shadow-md"
+                : "text-white/70 hover:text-white"
             }`}
           >
-            ADULT
+            Happy Hour (20% Off)
           </button>
         </div>
       </div>
 
-      {/* Plan Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {membershipPlans[activeTab].map((plan, index) => (
-          <MembershipFlipCard key={index} plan={plan} />
+      {/* Pricing Cards Grid - Matching Clean High-Contrast Modern Screenshot */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+        {MEMBERSHIP_PLANS[activeTab].map((plan, index) => (
+          <ScrollReveal
+            key={plan.id}
+            direction="up"
+            delay={0.1 + index * 0.08}
+            className="h-full"
+          >
+            <div
+              className={`h-full rounded-[26px] sm:rounded-[30px] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 relative shadow-2xl ${
+                plan.isPopular
+                  ? "bg-[#141313] border-2 border-primary shadow-[0_0_30px_rgba(217,151,43,0.15)] md:-translate-y-2"
+                  : "bg-[#101010] border border-white/10 hover:border-white/25"
+              }`}
+            >
+              {/* Popular Badge */}
+              {plan.isPopular && (
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-black font-impact text-xs tracking-wider uppercase px-4 py-1 rounded-full shadow-lg font-bold">
+                  Most Popular
+                </div>
+              )}
+
+              {/* Top Section */}
+              <div>
+                {/* Plan Header */}
+                <h3 className="text-xl sm:text-2xl font-impact text-white tracking-wide uppercase">
+                  {plan.name}
+                </h3>
+                <p className="text-xs text-white/60 font-inter mt-1 min-h-[32px] line-clamp-2">
+                  {plan.subtitle}
+                </p>
+
+                {/* Price Display */}
+                <div className="mt-5 mb-6">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl sm:text-4xl lg:text-5xl font-impact text-white tracking-tight">
+                      {plan.price}
+                    </span>
+                    <span className="text-xs sm:text-sm text-white/60 font-inter font-medium">
+                      {plan.period}
+                    </span>
+                  </div>
+                  {plan.annualPrice && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[11px] font-inter text-primary font-semibold">
+                      <span className="material-symbols-outlined text-[13px]">savings</span>
+                      <span>{plan.annualPrice}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Get Started CTA Button */}
+                <Link
+                  href="/register"
+                  className={`w-full py-3.5 px-6 rounded-2xl font-inter font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 block text-center shadow-md cursor-pointer ${
+                    plan.isPopular
+                      ? "bg-primary hover:bg-primary-hover text-black font-extrabold"
+                      : "bg-white/10 hover:bg-white text-white hover:text-black"
+                  }`}
+                >
+                  Get started
+                </Link>
+
+                {/* Clean Divider Line */}
+                <div className="border-t border-white/10 my-6 sm:my-7" />
+
+                {/* Features List Section */}
+                <div>
+                  <h4 className="text-[11px] sm:text-xs font-inter font-bold uppercase tracking-wider text-white/90 mb-1">
+                    FEATURES
+                  </h4>
+                  <p className="text-[11px] sm:text-xs text-white/50 font-inter mb-4">
+                    {plan.isPopular ? "Everything in basic plus..." : "Everything included in this tier:"}
+                  </p>
+
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, fIdx) => (
+                      <li
+                        key={fIdx}
+                        className={`flex items-center gap-3 text-xs sm:text-sm font-inter leading-tight ${
+                          feature.included ? "text-white/85" : "text-white/35"
+                        }`}
+                      >
+                        {feature.included ? (
+                          <div className="w-5 h-5 rounded-full bg-black border border-white/20 flex items-center justify-center flex-shrink-0 text-primary">
+                            <span className="material-symbols-outlined text-[13px] font-bold">
+                              check
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="w-5 h-5 rounded-full bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-white/30">
+                            <span className="material-symbols-outlined text-[13px]">
+                              remove
+                            </span>
+                          </div>
+                        )}
+                        <span>{feature.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </ScrollReveal>
         ))}
       </div>
     </section>
