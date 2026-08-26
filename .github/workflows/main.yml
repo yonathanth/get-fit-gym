@@ -31,7 +31,7 @@ jobs:
             git reset --hard origin/master
 
             echo "📦 Installing dependencies..."
-            npm ci
+            npm install --force 
 
             echo "🏗️ Building Next.js..."
             npm run build
