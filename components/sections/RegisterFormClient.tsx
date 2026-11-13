@@ -1,94 +1,132 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ScrollReveal from "@/components/ui/ScrollReveal";
-import Modal from "@/components/ui/Modal";
 
-export interface TrainerOption {
-  id: string;
+export type Period = "1-month" | "3-months" | "6-months" | "1-year";
+
+export interface RegisterPlan {
   slug: string;
   name: string;
-  role: string;
-  image: string;
-  imageUrl?: string;
-  specialty?: string;
-  bio?: string;
-  fullBio?: string | null;
-  experience?: string;
-  experienceText?: string | null;
-  certifications?: string[];
-  specializations?: string[];
+  category: string; // "REGULAR" | "HAPPY_HOUR"
+  tier: string; // "SINGLE" | "COUPLE"
+  subtitle: string;
+  isPopular: boolean;
+  prices: Record<Period, string>;
+}
+
+export interface RegisterClass {
+  name: string;
+  schedule: string;
 }
 
 interface RegisterFormClientProps {
-  trainers: TrainerOption[];
+  plans: RegisterPlan[];
+  classes: RegisterClass[];
+  initialPlan?: string;
+  initialPeriod?: string;
 }
 
-export default function RegisterFormClient({ trainers }: RegisterFormClientProps) {
-  const [formData, setFormData] = useState({
-    // Personal Information
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    dateOfBirth: "",
-    gender: "",
-    
-    // Emergency Contact
-    emergencyName: "",
-    emergencyPhone: "",
-    
-    // Membership
-    membershipType: "gym-spa-regular",
-    
-    // Trainer (optional)
-    selectedTrainer: "",
-    
-    // Classes (optional)
-    selectedClasses: [] as string[],
-    
-    // Health Information
-    medicalConditions: ""
-  });
+const PERIODS: { id: Period; label: string; months: number }[] = [
+  { id: "1-month", label: "1 Month", months: 1 },
+  { id: "3-months", label: "3 Months", months: 3 },
+  { id: "6-months", label: "6 Months", months: 6 },
+  { id: "1-year", label: "1 Year", months: 12 },
+];
 
-  const [activeTrainerModal, setActiveTrainerModal] = useState<TrainerOption | null>(null);
-  // Keep the last opened trainer so the popup content stays visible during its close animation
-  const [shownTrainer, setShownTrainer] = useState<TrainerOption | null>(null);
-  if (activeTrainerModal && activeTrainerModal !== shownTrainer) {
-    setShownTrainer(activeTrainerModal);
-  }
+const ACCESS_LABEL: Record<string, { label: string; hint: string }> = {
+  REGULAR: { label: "Any time", hint: "Full opening hours" },
+  HAPPY_HOUR: { label: "Happy hour", hint: "Off-peak, lower price" },
+};
+const TIER_LABEL: Record<string, { label: string; hint: string }> = {
+  SINGLE: { label: "Just me", hint: "1 person" },
+  COUPLE: { label: "Couple", hint: "2 people" },
+};
+
+/** "Gym With Spa (Couple - 10% Off)" → "Gym With Spa" */
+const serviceOf = (p: RegisterPlan) => p.name.split("(")[0].trim();
+const amount = (price: string) => Number(price.replace(/[^\d.]/g, "")) || 0;
+const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
+
+type Choice = { service: string; access: string; tier: string };
+const fieldOf = (p: RegisterPlan): Choice => ({ service: serviceOf(p), access: p.category, tier: p.tier });
+
+const inputCls =
+  "w-full bg-[#0A0A0A] border border-white/10 rounded-xl px-4 py-3.5 text-white font-inter text-sm focus:outline-none focus:border-primary transition-colors placeholder:text-white/30";
+
+export default function RegisterFormClient({ plans, classes, initialPlan, initialPeriod }: RegisterFormClientProps) {
+  const startPlan =
+    plans.find((p) => p.slug === initialPlan) ??
+    plans.find((p) => p.isPopular && p.category === "REGULAR" && p.tier === "SINGLE") ??
+    plans[0];
+
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [choice, setChoice] = useState<Choice | null>(startPlan ? fieldOf(startPlan) : null);
+  const [period, setPeriod] = useState<Period>(
+    PERIODS.some((p) => p.id === initialPeriod) ? (initialPeriod as Period) : "1-month"
+  );
+  const [selectedClasses, setSelectedClasses] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleClassToggle = (className: string) => {
-    setFormData(prev => ({
-      ...prev,
-      selectedClasses: prev.selectedClasses.includes(className)
-        ? prev.selectedClasses.filter(id => id !== className)
-        : [...prev.selectedClasses, className]
-    }));
+  const services = useMemo(() => [...new Set(plans.map(serviceOf))], [plans]);
+  const accesses = useMemo(() => [...new Set(plans.map((p) => p.category))], [plans]);
+  const tiers = useMemo(() => [...new Set(plans.map((p) => p.tier))], [plans]);
+
+  const plan = choice
+    ? plans.find((p) => serviceOf(p) === choice.service && p.category === choice.access && p.tier === choice.tier)
+    : undefined;
+
+  /** Pick a value; if that exact combination doesn't exist, jump to the closest plan that has it. */
+  const choose = (field: keyof Choice, value: string) => {
+    if (!choice) return;
+    const next = { ...choice, [field]: value };
+    const candidates = plans.filter((p) => fieldOf(p)[field] === value);
+    const score = (p: RegisterPlan) =>
+      (Object.keys(next) as (keyof Choice)[]).filter((k) => fieldOf(p)[k] === next[k]).length;
+    const best = candidates.sort((a, b) => score(b) - score(a))[0];
+    setChoice(best ? fieldOf(best) : next);
   };
+
+  const available = (field: keyof Choice, value: string) =>
+    !!choice && plans.some((p) => {
+      const f = fieldOf(p);
+      return f[field] === value && (Object.keys(f) as (keyof Choice)[]).every((k) => k === field || f[k] === choice[k]);
+    });
+
+  const toggleClass = (className: string) =>
+    setSelectedClasses((prev) => (prev.includes(className) ? prev.filter((c) => c !== className) : [...prev, className]));
+
+  const periodMeta = PERIODS.find((p) => p.id === period)!;
+  const price = plan?.prices[period] ?? "";
+  const monthly = plan ? amount(plan.prices["1-month"]) : 0;
+  const total = amount(price);
+  const savings = monthly && total ? monthly * periodMeta.months - total : 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMessage("");
-
     try {
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: name.trim(),
+          phone: phone.trim(),
+          planSlug: plan?.slug,
+          period,
+          membershipType: plan ? `${plan.name} · ${periodMeta.label} · ${price}` : undefined,
+          selectedClasses,
+        }),
       });
-
-      if (!res.ok) {
-        throw new Error("Failed to submit registration");
-      }
-
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Failed to submit registration");
       setSubmitted(true);
-    } catch (err: any) {
-      setErrorMessage(err.message || "Something went wrong. Please try again.");
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -96,22 +134,26 @@ export default function RegisterFormClient({ trainers }: RegisterFormClientProps
 
   if (submitted) {
     return (
-      <section className="max-w-[650px] mx-auto px-4 sm:px-6 my-12">
+      <section className="max-w-[640px] mx-auto px-4 sm:px-6 my-12">
         <div className="rounded-[28px] border border-primary/40 bg-surface/90 p-8 sm:p-12 text-center shadow-2xl space-y-4">
           <div className="w-16 h-16 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center mx-auto text-primary">
             <span className="material-symbols-outlined text-3xl">check_circle</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-impact text-white uppercase italic">
-            Registration Received!
-          </h2>
+          <h2 className="text-3xl sm:text-4xl font-impact text-white uppercase italic">You&apos;re in!</h2>
           <p className="text-sm sm:text-base text-white/80 font-inter leading-relaxed">
-            Thank you, <strong className="text-primary">{formData.firstName}</strong>. Your registration is saved in our system. Our onboarding team will contact you at <strong className="text-white">{formData.phone}</strong> within 24 hours to finalize your welcome pass.
+            Thanks, <strong className="text-primary">{name.split(" ")[0]}</strong>. We&apos;ll call you at{" "}
+            <strong className="text-white">{phone}</strong> within 24 hours to confirm your membership.
           </p>
           <button
-            onClick={() => setSubmitted(false)}
+            onClick={() => {
+              setSubmitted(false);
+              setName("");
+              setPhone("");
+              setSelectedClasses([]);
+            }}
             className="mt-6 px-8 py-3 rounded-full bg-primary text-black font-impact text-base tracking-wider uppercase hover:bg-primary-hover transition-all cursor-pointer"
           >
-            Submit Another Registration
+            Register someone else
           </button>
         </div>
       </section>
@@ -119,474 +161,245 @@ export default function RegisterFormClient({ trainers }: RegisterFormClientProps
   }
 
   return (
-    <>
-      <section className="max-w-[900px] mx-auto px-4 sm:px-6">
-        <form onSubmit={handleSubmit} className="space-y-10 sm:space-y-14">
-          {errorMessage && (
-            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-inter">
-              {errorMessage}
-            </div>
-          )}
-
-          {/* 1. Personal Information */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <div className="p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-white/10 bg-surface/70 backdrop-blur-sm space-y-6">
-              <div className="text-center sm:text-left border-b border-white/5 pb-4">
-                <h2 className="text-2xl sm:text-3xl font-impact text-white leading-[1.1] tracking-tight uppercase">
-                  Personal <span className="text-primary">Information</span>
-                </h2>
-                <p className="text-xs sm:text-sm text-white/60 font-inter mt-1">
-                  Your primary membership contact details
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                <div>
-                  <label className="block text-xs sm:text-sm font-inter font-semibold text-white/90 mb-2 text-center sm:text-left">
-                    First Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.firstName}
-                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="w-full bg-[#0A0A0A] border border-white/10 rounded-xl px-4 py-3 text-white font-inter text-sm focus:outline-none focus:border-primary transition-colors text-center sm:text-left"
-                    placeholder="e.g. Abebe"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs sm:text-sm font-inter font-semibold text-white/90 mb-2 text-center sm:text-left">
-                    Last Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.lastName}
-                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                    className="w-full bg-[#0A0A0A] border border-white/10 rounded-xl px-4 py-3 text-white font-inter text-sm focus:outline-none focus:border-primary transition-colors text-center sm:text-left"
-                    placeholder="e.g. Bikila"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs sm:text-sm font-inter font-semibold text-white/90 mb-2 text-center sm:text-left">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-[#0A0A0A] border border-white/10 rounded-xl px-4 py-3 text-white font-inter text-sm focus:outline-none focus:border-primary transition-colors text-center sm:text-left"
-                    placeholder="your@email.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs sm:text-sm font-inter font-semibold text-white/90 mb-2 text-center sm:text-left">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-[#0A0A0A] border border-white/10 rounded-xl px-4 py-3 text-white font-inter text-sm focus:outline-none focus:border-primary transition-colors text-center sm:text-left"
-                    placeholder="+251 900 000 000"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs sm:text-sm font-inter font-semibold text-white/90 mb-2 text-center sm:text-left">
-                    Date of Birth *
-                  </label>
-                  <input
-                    type="date"
-                    required
-                    value={formData.dateOfBirth}
-                    onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
-                    className="w-full bg-[#0A0A0A] border border-white/10 rounded-xl px-4 py-3 text-white font-inter text-sm focus:outline-none focus:border-primary transition-colors text-center sm:text-left [&::-webkit-datetime-edit]:justify-center sm:[&::-webkit-datetime-edit]:justify-start [&::-webkit-datetime-edit]:flex sm:[&::-webkit-datetime-edit]:inline-flex"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs sm:text-sm font-inter font-semibold text-white/90 mb-2 text-center sm:text-left">
-                    Gender *
-                  </label>
-                  <select
-                    required
-                    value={formData.gender}
-                    onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                    className="w-full bg-[#0A0A0A] border border-white/10 rounded-xl px-4 py-3 text-white font-inter text-sm focus:outline-none focus:border-primary transition-colors cursor-pointer text-center sm:text-left"
-                  >
-                    <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Prefer not to say</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* 2. Emergency Contact */}
-          <ScrollReveal direction="up" delay={0.15}>
-            <div className="p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-white/10 bg-surface/70 backdrop-blur-sm space-y-6">
-              <div className="text-center sm:text-left border-b border-white/5 pb-4">
-                <h2 className="text-2xl sm:text-3xl font-impact text-white leading-[1.1] tracking-tight uppercase">
-                  Emergency <span className="text-primary">Contact</span>
-                </h2>
-                <p className="text-xs sm:text-sm text-white/60 font-inter mt-1">
-                  Contact person in case of medical emergency
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                <div>
-                  <label className="block text-xs sm:text-sm font-inter font-semibold text-white/90 mb-2 text-center sm:text-left">
-                    Contact Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.emergencyName}
-                    onChange={(e) => setFormData({ ...formData, emergencyName: e.target.value })}
-                    className="w-full bg-[#0A0A0A] border border-white/10 rounded-xl px-4 py-3 text-white font-inter text-sm focus:outline-none focus:border-primary transition-colors text-center sm:text-left"
-                    placeholder="Emergency contact full name"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs sm:text-sm font-inter font-semibold text-white/90 mb-2 text-center sm:text-left">
-                    Emergency Phone *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.emergencyPhone}
-                    onChange={(e) => setFormData({ ...formData, emergencyPhone: e.target.value })}
-                    className="w-full bg-[#0A0A0A] border border-white/10 rounded-xl px-4 py-3 text-white font-inter text-sm focus:outline-none focus:border-primary transition-colors text-center sm:text-left"
-                    placeholder="+251 900 000 000"
-                  />
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* 3. Membership Tier Selection */}
-          <ScrollReveal direction="up" delay={0.2}>
-            <div className="p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-white/10 bg-surface/70 backdrop-blur-sm space-y-6">
-              <div className="text-center sm:text-left border-b border-white/5 pb-4">
-                <h2 className="text-2xl sm:text-3xl font-impact text-white leading-[1.1] tracking-tight uppercase">
-                  Select <span className="text-primary">Membership Tier</span>
-                </h2>
-                <p className="text-xs sm:text-sm text-white/60 font-inter mt-1">
-                  Choose the plan that fits your lifestyle
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                {[
-                  { id: "gym-spa-regular", name: "Gym With Spa (Any Time)", price: "27,495 ETB / Mo", desc: "All-inclusive gym, 750 m² spa, Moroccan bath & classes" },
-                  { id: "gym-only-regular", name: "Gym Only (Any Time)", price: "19,500 ETB / Mo", desc: "Full 1,050 m² Life Fitness floor & 14 group classes" },
-                  { id: "happy-hour-pass", name: "Happy Hour Pass (20% Off)", price: "22,000 ETB / Mo", desc: "Off-peak access with full spa & class benefits" },
-                  { id: "couple-package", name: "Couple Package (10% Off)", price: "49,530 ETB / Mo", desc: "2-person all-inclusive Gym & Spa membership" }
-                ].map((membership) => {
-                  const isSelected = formData.membershipType === membership.id;
-                  return (
-                    <label
-                      key={membership.id}
-                      className={`block relative overflow-hidden rounded-[20px] border p-4 sm:p-5 cursor-pointer transition-all duration-200 ${
-                        isSelected
-                          ? "border-primary bg-primary/10 shadow-lg"
-                          : "border-white/10 bg-[#0A0A0A] hover:border-primary/40"
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <input
-                          type="radio"
-                          name="membership"
-                          value={membership.id}
-                          checked={isSelected}
-                          onChange={(e) => setFormData({ ...formData, membershipType: e.target.value })}
-                          className="mt-1 w-4 h-4 accent-primary cursor-pointer"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-baseline justify-between gap-2">
-                            <h3 className="text-base sm:text-lg font-impact text-white uppercase tracking-tight">
-                              {membership.name}
-                            </h3>
-                            <span className="text-xs font-bold text-primary whitespace-nowrap">
-                              {membership.price}
-                            </span>
-                          </div>
-                          <p className="text-xs text-white/60 font-inter mt-1">
-                            {membership.desc}
-                          </p>
-                        </div>
-                      </div>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* 4. Compact Trainer Selection from DB */}
-          {trainers && trainers.length > 0 && (
-            <ScrollReveal direction="up" delay={0.25}>
-              <div className="p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-white/10 bg-surface/70 backdrop-blur-sm space-y-6">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border-b border-white/5 pb-4 text-center sm:text-left">
-                  <div>
-                    <h2 className="text-2xl sm:text-3xl font-impact text-white leading-[1.1] tracking-tight uppercase">
-                      Dedicated <span className="text-primary">Trainer</span>
-                    </h2>
-                    <p className="text-xs sm:text-sm text-white/60 font-inter mt-0.5">
-                      Optional: Select your coach or click info for credentials
-                    </p>
-                  </div>
-
-                  {formData.selectedTrainer && (
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, selectedTrainer: "" })}
-                      className="text-xs text-primary hover:underline font-inter font-semibold cursor-pointer"
-                    >
-                      Clear Selection
-                    </button>
-                  )}
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  {trainers.map((trainer) => {
-                    const isSelected = formData.selectedTrainer === trainer.name;
-                    return (
-                      <div
-                        key={trainer.id}
-                        onClick={() => setFormData({ ...formData, selectedTrainer: isSelected ? "" : trainer.name })}
-                        className={`relative rounded-[20px] border p-3.5 sm:p-4 flex items-center justify-between gap-3 cursor-pointer transition-all duration-200 ${
-                          isSelected
-                            ? "border-primary bg-primary/10 shadow-lg"
-                            : "border-white/10 bg-[#0A0A0A] hover:border-primary/40"
-                        }`}
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <img
-                            src={trainer.imageUrl || trainer.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=800&fit=crop&q=80"}
-                            alt={trainer.name}
-                            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 flex-shrink-0 ${
-                              isSelected ? "border-primary" : "border-white/20"
-                            }`}
-                          />
-                          <div className="min-w-0">
-                            <h3 className="text-base sm:text-lg font-impact text-white uppercase tracking-tight truncate leading-tight">
-                              {trainer.name}
-                            </h3>
-                            <p className="text-xs text-primary font-inter font-semibold truncate">
-                              {trainer.role}
-                            </p>
-                            <p className="text-[11px] text-white/50 font-inter truncate hidden xs:block">
-                              {trainer.experienceText || `${trainer.experience || "5+ Years"}`}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                          <button
-                            type="button"
-                            onClick={() => setActiveTrainerModal(trainer)}
-                            className="p-2 rounded-xl bg-white/5 hover:bg-primary/20 text-white/70 hover:text-primary transition-colors cursor-pointer"
-                            title="View Trainer Bio & Credentials"
-                          >
-                            <span className="material-symbols-outlined text-lg">info</span>
-                          </button>
-
-                          <div className={`w-6 h-6 rounded-full border flex items-center justify-center ${
-                            isSelected ? "bg-primary border-primary text-black font-bold" : "border-white/20 bg-black/40 text-transparent"
-                          }`}>
-                            <span className="material-symbols-outlined text-sm">check</span>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </ScrollReveal>
-          )}
-
-          {/* 5. Classes Selection */}
-          <ScrollReveal direction="up" delay={0.3}>
-            <div className="p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-white/10 bg-surface/70 backdrop-blur-sm space-y-6">
-              <div className="text-center sm:text-left border-b border-white/5 pb-4">
-                <h2 className="text-2xl sm:text-3xl font-impact text-white leading-[1.1] tracking-tight uppercase">
-                  Interested <span className="text-primary">Classes</span>
-                </h2>
-                <p className="text-xs sm:text-sm text-white/60 font-inter mt-1">
-                  Optional: Select group routines you want included
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 font-inter">
-                {[
-                  "HIIT & Metabolic Training",
-                  "Zumba Kick Boxing",
-                  "Aerobics & Body Toning",
-                  "Circuit & Sweat Cardio",
-                  "Tae Bo Combat",
-                  "World of Dance Fitness",
-                  "Senior Circuit & Toning",
-                  "Get Fit Combo"
-                ].map((className) => {
-                  const isChecked = formData.selectedClasses.includes(className);
-                  return (
-                    <label
-                      key={className}
-                      className={`block rounded-xl border p-3 cursor-pointer transition-all duration-200 text-center ${
-                        isChecked
-                          ? "border-primary bg-primary/10 text-white font-semibold shadow-md"
-                          : "border-white/10 bg-[#0A0A0A] text-white/70 hover:border-white/20"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => handleClassToggle(className)}
-                        className="sr-only"
-                      />
-                      <span className="text-xs font-inter block truncate">
-                        {className}
-                      </span>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* 6. Health & Medical Notes */}
-          <ScrollReveal direction="up" delay={0.35}>
-            <div className="p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-white/10 bg-surface/70 backdrop-blur-sm space-y-6">
-              <div className="text-center sm:text-left border-b border-white/5 pb-4">
-                <h2 className="text-2xl sm:text-3xl font-impact text-white leading-[1.1] tracking-tight uppercase">
-                  Health & <span className="text-primary">Safety Notes</span>
-                </h2>
-                <p className="text-xs sm:text-sm text-white/60 font-inter mt-1">
-                  Optional: Any prior injuries or wellness objectives we should account for
-                </p>
-              </div>
-              
-              <div>
-                <textarea
-                  value={formData.medicalConditions}
-                  onChange={(e) => setFormData({ ...formData, medicalConditions: e.target.value })}
-                  rows={3}
-                  className="w-full bg-[#0A0A0A] border border-white/10 rounded-xl p-4 text-white font-inter text-sm focus:outline-none focus:border-primary transition-colors resize-none text-center sm:text-left"
-                  placeholder="List any medical history, previous injuries, or specific coaching preferences..."
-                />
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* Submit Button */}
-          <ScrollReveal direction="up" delay={0.4}>
-            <div className="flex flex-col items-center justify-center pt-4 text-center">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full sm:w-auto px-12 py-4 rounded-full bg-primary hover:bg-primary-hover text-black font-impact text-lg tracking-wider uppercase transition-all duration-300 shadow-xl cursor-pointer disabled:opacity-50"
-              >
-                {isSubmitting ? "Processing..." : "Complete Registration"}
-              </button>
-              <p className="text-xs text-white/50 font-inter mt-3">
-                No payment required today. Our team will verify your membership upon arrival.
-              </p>
-            </div>
-          </ScrollReveal>
-        </form>
-      </section>
-
-      {/* Trainer Profile Details Pop-up Modal */}
-      <Modal
-        isOpen={!!activeTrainerModal}
-        onClose={() => setActiveTrainerModal(null)}
-        maxWidth="max-w-lg"
-        ariaLabel={shownTrainer?.name}
-        panelClassName="p-6 sm:p-8"
-      >
-        {shownTrainer && (
-            <>
-            <div className="flex items-center gap-4 pb-5 mb-6 border-b border-white/10 pr-10">
-              <img
-                src={shownTrainer.imageUrl || shownTrainer.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=800&fit=crop&q=80"}
-                alt={shownTrainer.name}
-                className="w-16 h-16 rounded-[9999px] object-cover ring-2 ring-primary/70 ring-offset-2 ring-offset-[#101010]"
+    <section className="max-w-[640px] mx-auto px-4 sm:px-6">
+      <ScrollReveal direction="up" delay={0.1}>
+        <form
+          onSubmit={handleSubmit}
+          className="rounded-[24px] sm:rounded-[32px] border border-white/10 bg-surface/70 backdrop-blur-sm p-5 sm:p-8 space-y-8 font-inter"
+        >
+          {/* 1. Details */}
+          <fieldset className="space-y-3">
+            <Step n={1} title="Your details" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input
+                type="text"
+                required
+                autoComplete="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className={inputCls}
+                placeholder="Full name"
+                aria-label="Full name"
               />
-              <div>
-                <h3 className="text-[28px] leading-none font-impact text-white uppercase italic">{shownTrainer.name}</h3>
-                <p className="mt-1.5 text-xs text-primary font-inter font-semibold tracking-wide">{shownTrainer.role}</p>
-              </div>
+              <input
+                type="tel"
+                required
+                autoComplete="tel"
+                inputMode="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className={inputCls}
+                placeholder="Phone (09… or +251…)"
+                aria-label="Phone number"
+              />
             </div>
+          </fieldset>
 
-            <div className="space-y-5 text-xs font-inter">
-              <div>
-                <span className="text-white/50 uppercase tracking-wider block font-semibold mb-1">About Coach</span>
-                <p className="text-sm text-white/80 leading-relaxed">{shownTrainer.fullBio || shownTrainer.bio}</p>
-              </div>
+          {/* 2. Membership */}
+          {plans.length > 0 && choice && (
+            <fieldset className="space-y-4">
+              <Step n={2} title="Membership" />
 
-              <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-[#0A0A0A] border border-white/5">
-                <div>
-                  <span className="text-white/50 block mb-1">Experience</span>
-                  <span className="text-primary font-impact text-lg">{shownTrainer.experienceText || `${shownTrainer.experience || "5+ Years"}`}</span>
-                </div>
-                <div>
-                  <span className="text-white/50 block mb-1">Role</span>
-                  <span className="text-white font-medium text-xs">{shownTrainer.role}</span>
-                </div>
-              </div>
+              <Segment label="Service">
+                {services.map((s) => (
+                  <Option
+                    key={s}
+                    active={choice.service === s}
+                    dim={!available("service", s)}
+                    onClick={() => choose("service", s)}
+                    label={s}
+                    hint={/spa/i.test(s) ? "Gym + spa & recovery" : "Training floor & classes"}
+                  />
+                ))}
+              </Segment>
 
-              {shownTrainer.certifications && shownTrainer.certifications.length > 0 && (
+              {accesses.length > 1 && (
+                <Segment label="Access">
+                  {accesses.map((a) => (
+                    <Option
+                      key={a}
+                      active={choice.access === a}
+                      dim={!available("access", a)}
+                      onClick={() => choose("access", a)}
+                      label={ACCESS_LABEL[a]?.label ?? a}
+                      hint={ACCESS_LABEL[a]?.hint}
+                    />
+                  ))}
+                </Segment>
+              )}
+
+              {tiers.length > 1 && (
+                <Segment label="For">
+                  {tiers.map((t) => (
+                    <Option
+                      key={t}
+                      active={choice.tier === t}
+                      dim={!available("tier", t)}
+                      onClick={() => choose("tier", t)}
+                      label={TIER_LABEL[t]?.label ?? t}
+                      hint={TIER_LABEL[t]?.hint}
+                    />
+                  ))}
+                </Segment>
+              )}
+
+              {plan && (
                 <div>
-                  <span className="text-white/50 uppercase tracking-wider block font-semibold mb-2">Certifications & Credentials</span>
-                  <ul className="space-y-1.5">
-                    {shownTrainer.certifications.map((cert, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-white/80">
-                        <span className="material-symbols-outlined text-primary text-sm">verified</span>
-                        <span>{cert}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">Duration</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {PERIODS.map((p) => {
+                      const active = period === p.id;
+                      const save = monthly ? monthly * p.months - amount(plan.prices[p.id]) : 0;
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => setPeriod(p.id)}
+                          aria-pressed={active}
+                          className={`relative rounded-xl border px-3 py-3 text-left transition-all cursor-pointer ${
+                            active
+                              ? "border-primary bg-primary/10"
+                              : "border-white/10 bg-[#0A0A0A] hover:border-white/25"
+                          }`}
+                        >
+                          <span className={`block text-xs font-semibold ${active ? "text-white" : "text-white/70"}`}>
+                            {p.label}
+                          </span>
+                          <span className={`block font-impact text-lg leading-tight ${active ? "text-primary" : "text-white"}`}>
+                            {plan.prices[p.id].replace(/\s*ETB/i, "")}
+                          </span>
+                          {save > 0 && (
+                            <span className="absolute -top-2 right-2 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-bold uppercase text-black">
+                              Save {Math.round((save / (monthly * p.months)) * 100)}%
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 
-              <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                <button
-                  type="button"
-                  onClick={() => setActiveTrainerModal(null)}
-                  className="px-5 py-2.5 rounded-[9999px] border border-white/15 font-inter text-[13px] font-medium text-white/70 hover:text-white hover:border-white/30 hover:bg-white/5 transition-colors cursor-pointer"
-                >
-                  Close
-                </button>
+              {/* Summary */}
+              {plan && (
+                <div className="flex items-center justify-between gap-4 rounded-2xl border border-primary/30 bg-primary/[0.06] px-4 py-3.5">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-white">{plan.name}</p>
+                    <p className="text-xs text-white/55">
+                      {periodMeta.label}
+                      {periodMeta.months > 1 && total ? ` · ≈ ${fmt(total / periodMeta.months)} ETB / month` : ""}
+                      {savings > 0 ? ` · save ${fmt(savings)} ETB` : ""}
+                    </p>
+                  </div>
+                  <p className="shrink-0 font-impact text-2xl text-primary leading-none">{price}</p>
+                </div>
+              )}
+            </fieldset>
+          )}
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFormData({ ...formData, selectedTrainer: shownTrainer.name });
-                    setActiveTrainerModal(null);
-                  }}
-                  className="group inline-flex items-center gap-2 px-6 py-2.5 rounded-[9999px] bg-primary hover:bg-primary-hover text-black font-inter text-[13px] font-semibold shadow-[0_8px_24px_-8px_rgba(217,151,43,0.6)] transition-all active:scale-[0.98] cursor-pointer"
-                >
-                  Select this coach
-                  <span className="material-symbols-outlined text-[18px] transition-transform duration-300 group-hover:translate-x-0.5">
-                    arrow_forward
-                  </span>
-                </button>
+          {/* 3. Classes (optional) */}
+          {classes.length > 0 && (
+            <fieldset className="space-y-3">
+              <Step n={plans.length > 0 ? 3 : 2} title="Classes" optional />
+              <div className="flex flex-wrap gap-2">
+                {classes.map((c) => {
+                  const on = selectedClasses.includes(c.name);
+                  return (
+                    <button
+                      key={c.name}
+                      type="button"
+                      onClick={() => toggleClass(c.name)}
+                      aria-pressed={on}
+                      title={c.schedule}
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs transition-all cursor-pointer ${
+                        on
+                          ? "border-primary bg-primary/15 text-white font-semibold"
+                          : "border-white/10 bg-[#0A0A0A] text-white/70 hover:border-white/25"
+                      }`}
+                    >
+                      <span className={`material-symbols-outlined text-[16px] ${on ? "text-primary" : "text-white/30"}`}>
+                        {on ? "check_circle" : "add_circle"}
+                      </span>
+                      {c.name}
+                    </button>
+                  );
+                })}
               </div>
-            </div>
-          </>
-        )}
-      </Modal>
-    </>
+            </fieldset>
+          )}
+
+          {errorMessage && (
+            <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs">{errorMessage}</div>
+          )}
+
+          <div className="space-y-3">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="group w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 font-inter text-sm font-bold uppercase tracking-wider text-black shadow-[0_10px_30px_-10px_rgba(217,151,43,0.7)] transition-all hover:bg-primary-hover active:scale-[0.99] disabled:opacity-60 cursor-pointer"
+            >
+              {isSubmitting ? "Sending…" : "Register"}
+              {!isSubmitting && (
+                <span className="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-0.5">
+                  arrow_forward
+                </span>
+              )}
+            </button>
+            <p className="text-center text-[11px] text-white/45">
+              No payment now. We&apos;ll call you to confirm and answer any questions.
+            </p>
+          </div>
+        </form>
+      </ScrollReveal>
+    </section>
+  );
+}
+
+function Step({ n, title, optional }: { n: number; title: string; optional?: boolean }) {
+  return (
+    <legend className="flex items-center gap-2.5">
+      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-black">{n}</span>
+      <span className="font-impact text-xl sm:text-2xl uppercase tracking-tight text-white">{title}</span>
+      {optional && <span className="text-[11px] text-white/40">optional</span>}
+    </legend>
+  );
+}
+
+function Segment({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">{label}</p>
+      <div className="grid grid-cols-2 gap-2">{children}</div>
+    </div>
+  );
+}
+
+function Option({
+  active,
+  dim,
+  onClick,
+  label,
+  hint,
+}: {
+  active: boolean;
+  dim?: boolean;
+  onClick: () => void;
+  label: string;
+  hint?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`rounded-xl border px-3.5 py-3 text-left transition-all cursor-pointer ${
+        active
+          ? "border-primary bg-primary/10"
+          : `border-white/10 bg-[#0A0A0A] hover:border-white/25 ${dim ? "opacity-50" : ""}`
+      }`}
+    >
+      <span className={`block text-sm font-semibold ${active ? "text-white" : "text-white/80"}`}>{label}</span>
+      {hint && <span className="block text-[11px] text-white/45">{hint}</span>}
+    </button>
   );
 }

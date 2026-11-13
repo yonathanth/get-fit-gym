@@ -194,7 +194,7 @@ export default function MembershipPlansSection({ plans = [] }: MembershipPlansSe
 
                   {/* Get Started CTA Button */}
                   <Link
-                    href="/register"
+                    href={`/register?plan=${encodeURIComponent(plan.id)}&period=${currentDuration}`}
                     className={`w-full py-3.5 px-6 rounded-2xl font-inter font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 block text-center shadow-md cursor-pointer ${
                       plan.isPopular
                         ? "bg-primary hover:bg-primary-hover text-black font-extrabold"
