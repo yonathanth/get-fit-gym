@@ -33,7 +33,7 @@ export default function OurTeamSection({ coaches = [] }: OurTeamSectionProps) {
         </p>
       </ScrollReveal>
 
-      <div className="flex flex-wrap justify-center gap-x-6 gap-y-10 sm:gap-x-8">
+      <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
         {displayCoaches.map((member, index) => (
           <ScrollReveal
             key={member.id}
@@ -41,26 +41,24 @@ export default function OurTeamSection({ coaches = [] }: OurTeamSectionProps) {
             delay={0.15 + (index % 4) * 0.08}
             className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] max-w-[380px]"
           >
-            <Link href={`/team/${member.slug}`} className="group block">
-              {/* Photo only, framed waist-up; no text or dark wash over the person */}
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] sm:rounded-[28px] border border-white/10 bg-surface shadow-xl transition-colors duration-300 group-hover:border-primary/50">
-                <img
-                  src={member.imageUrl || member.image || "/logo.png"}
-                  alt={member.name}
-                  className="absolute inset-0 h-full w-full object-cover object-[center_85%] transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                />
-                {/* Thin gold sheen on hover only */}
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-[linear-gradient(to_top,rgba(217,151,43,0.22),transparent_45%)]" />
-                <span className="absolute bottom-4 right-4 translate-y-2 rounded-full border border-primary/50 bg-black/55 px-4 py-2 font-inter text-[11px] font-semibold uppercase tracking-wider text-primary opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                  View Profile
-                </span>
-              </div>
+            <Link
+              href={`/team/${member.slug}`}
+              className="group relative block aspect-[4/5] overflow-hidden rounded-[22px] sm:rounded-[28px] border border-white/10 bg-surface shadow-xl transition-colors duration-300 hover:border-primary/50"
+            >
+              <img
+                src={member.imageUrl || member.image || "/logo.png"}
+                alt={member.name}
+                className="absolute inset-0 h-full w-full object-cover object-[center_85%] transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+              />
+              {/* Light shade on the bottom third only, just enough to read the name */}
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
 
-              <div className="mt-4 text-center">
-                <h3 className="font-impact text-2xl sm:text-[28px] uppercase tracking-tight text-white leading-none transition-colors group-hover:text-primary">
+              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                <h3 className="font-impact text-2xl sm:text-[28px] uppercase tracking-tight leading-none text-white transition-colors group-hover:text-primary">
                   {member.name}
                 </h3>
-                <p className="mt-1.5 font-inter text-xs sm:text-sm font-medium text-primary/90">{member.role}</p>
+                <p className="mt-1.5 font-inter text-xs sm:text-sm font-medium text-primary">{member.role}</p>
+                <div className="mt-3 h-[2px] w-6 bg-primary transition-all duration-300 group-hover:w-12" />
               </div>
             </Link>
           </ScrollReveal>
