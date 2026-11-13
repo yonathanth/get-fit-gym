@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import PageHeading from "@/components/sections/PageHeading";
 import CTASection from "@/components/sections/CTASection";
 import SpotlightEffect from "@/components/ui/SpotlightEffect";
@@ -6,6 +7,12 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+export const metadata: Metadata = {
+  title: "Blog",
+  description: "Training, nutrition and recovery advice from the coaches and health experts at Get Fit Gym.",
+  alternates: { canonical: "/blog" },
+};
 
 export default async function BlogPage() {
   const posts = await prisma.blogPost.findMany({
@@ -21,9 +28,9 @@ export default async function BlogPage() {
         title="Fitness Insights & Articles" 
         subtitle="Expert training advice, nutritional protocols, and recovery science curated by the Get Fit performance team."
         images={[
-          "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=1000&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&h=500&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=500&fit=crop&q=80"
+          "/images/others/dsc00746.webp",
+          "/images/facilities/dsc00690.webp",
+          "/images/others/dsc00723.webp"
         ]}
       />
       

@@ -96,7 +96,7 @@ export default function PerformanceTrackingSection() {
               <img
                 alt="Atmospheric training environment"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNdCD60Ml_Z-9YKIiTKC1dkWPWV9gkunp3xJKSJIfiSb4WVGBUv-EEFtzlsFwWYpfxUiu7cU8FIHhkIAIITZhk_jKiaZ5PGs6cv_78qdncYZLtPvo02WfuBwyTMgsKFltCUOkSy_ibtmVWUXEGR3DgQRiDwBc3MQ4JiAUogIWOSrBDI5uC3rveo04Yc6BbnKHe-JgoKggH0rK_wZo0GN6wAQDfgaN9SHHxEsmiB3NDYK5RutxXpWwf"
+                src="/images/hero/dsc00723.webp"
               />
             </div>
           </div>

@@ -32,13 +32,13 @@ interface ShowcaseDetailTemplateProps {
 
 export default function ShowcaseDetailTemplate({ event }: ShowcaseDetailTemplateProps) {
   const galleryList = event.galleryUrls || event.gallery || [
-    event.coverImageUrl || "https://images.unsplash.com/photo-1599447332490-d839c2a3f337?w=800&q=80"
+    event.coverImageUrl || "/images/hero/dsc00690.webp"
   ];
 
   const headingImages = event.headingImages || [
-    galleryList[0] || event.coverImageUrl || "https://images.unsplash.com/photo-1599447332490-d839c2a3f337?w=800&h=1000&fit=crop&q=80",
-    galleryList[1] || "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=500&fit=crop&q=80",
-    galleryList[2] || "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=500&fit=crop&q=80"
+    galleryList[0] || event.coverImageUrl || "/images/facilities/dsc00728.webp",
+    galleryList[1] || "/images/hero/dsc00723.webp",
+    galleryList[2] || "/images/hero/dsc00681.webp"
   ];
 
   const displayDate = event.eventDate || event.date || "Past Event";

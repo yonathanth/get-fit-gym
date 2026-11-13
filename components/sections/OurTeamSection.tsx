@@ -13,63 +13,22 @@ export interface CoachItem {
   bio: string;
 }
 
-export const DEFAULT_COACHES: CoachItem[] = [
-  {
-    id: "coach-teshome",
-    slug: "teshome-abate",
-    name: "Teshome Abate",
-    role: "Master Athletics Coach & Martial Arts Specialist",
-    bio: "Dual Master's in Exercise Physiology & Athletics Coaching, 7th Dan Black Belt in Wushu, and 22+ years elite athletic instruction.",
-    imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&h=800&fit=crop&q=80"
-  },
-  {
-    id: "coach-gebreal",
-    slug: "gebreal-tessema-admas",
-    name: "Gebreal Tessema Admas",
-    role: "Operational Manager & Medical Fitness Coach",
-    bio: "B.Ed. in Physical Education & M.A. in Leadership with 11 years coaching experience in medical fitness and exercise programming.",
-    imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&h=800&fit=crop&q=80"
-  },
-  {
-    id: "coach-abeyet",
-    slug: "abeyet-naqachew",
-    name: "Abeyet Naqachew",
-    role: "Senior Coach & Combat Sports Specialist",
-    bio: "20+ years of hands-on coaching leadership, functional movement, weightlifting program design, and 6th Dan Black Belt in Wushu.",
-    imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=800&fit=crop&q=80"
-  },
-  {
-    id: "coach-tewodros",
-    slug: "tewodros-bogale",
-    name: "Tewodros Bogale",
-    role: "Exercise Physiologist & Head Gym Instructor",
-    bio: "M.Sc. in Exercise Physiology and B.Sc. in Sport Science with 13+ years coaching experience in top commercial fitness environments.",
-    imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&h=800&fit=crop&q=80"
-  },
-  {
-    id: "coach-dr-tobel",
-    slug: "dr-tobel-daniel-tessema",
-    name: "Dr. Tobel Daniel Tessema",
-    role: "Medical Doctor & Community Nutrition Specialist",
-    bio: "Medical Doctor (M.D.) & M.Sc. candidate in Community Nutrition & Dietetics applying clinical medical insights to lifestyle wellness.",
-    imageUrl: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=800&h=800&fit=crop&q=80"
-  }
-];
-
 interface OurTeamSectionProps {
   coaches?: CoachItem[];
 }
 
 export default function OurTeamSection({ coaches = [] }: OurTeamSectionProps) {
-  const displayCoaches = coaches && coaches.length > 0 ? coaches : DEFAULT_COACHES;
+  // Team members come only from the admin; with none active, the section is hidden.
+  const displayCoaches = coaches ?? [];
+  if (displayCoaches.length === 0) return null;
 
   return (
-    <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-16 sm:py-20 md:py-28">
+    <section className="max-w-[1280px] mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-28">
       <ScrollReveal direction="up" delay={0.1}>
-        <h2 className="text-3xl sm:text-4xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-3 text-center">
-          Our <span className="text-primary">Team</span>
-        </h2>
-        <p className="text-xs sm:text-sm md:text-base text-white/70 font-inter text-center max-w-xl mx-auto mb-8 sm:mb-12">
+        <h2 className="font-impact uppercase tracking-tight leading-[1.02] text-[clamp(2.1rem,5.2vw,4rem)] text-balance mb-3 text-center">
+            <span className="text-fade">Our </span><span className="text-shimmer">Team</span>
+          </h2>
+        <p className="text-sm sm:text-base text-white/65 font-inter leading-relaxed text-pretty text-center max-w-xl mx-auto mb-8 sm:mb-12">
           From advanced exercise physiology to clinical medical fitness and elite athletic conditioning.
         </p>
       </ScrollReveal>
@@ -91,7 +50,7 @@ export default function OurTeamSection({ coaches = [] }: OurTeamSectionProps) {
                 <img
                   src={member.imageUrl || member.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80"}
                   alt={member.name}
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  className="w-full h-full object-cover object-[center_30%] transition-transform duration-700 ease-out group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
               </div>

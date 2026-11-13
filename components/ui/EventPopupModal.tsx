@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Modal from "@/components/ui/Modal";
 import EventRegistrationModal from "@/components/ui/EventRegistrationModal";
+import { useSettings } from "@/components/SettingsProvider";
 
 interface PopupEventData {
   id: string;
@@ -20,6 +22,8 @@ export default function EventPopupModal() {
   const [event, setEvent] = useState<PopupEventData | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  // Delay is set in the admin (Settings → popup delay); falls back to 10s
+  const delaySeconds = Math.max(0, Number(useSettings().popup_delay_seconds) || 10);
 
   useEffect(() => {
     // Check if dismissed in this session
@@ -40,96 +44,99 @@ export default function EventPopupModal() {
       } catch (err) {
         console.error("Failed to load featured event popup:", err);
       }
-    }, 10000); // 10 seconds
+    }, delaySeconds * 1000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [delaySeconds]);
 
   const handleClose = () => {
     setIsOpen(false);
     sessionStorage.setItem("getfit_event_popup_dismissed", "true");
   };
 
-  if (!isOpen || !event) return null;
+  if (!event) return null;
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-        <div className="relative w-full max-w-lg bg-[#121212] border border-primary/40 rounded-[28px] overflow-hidden shadow-[0_0_50px_rgba(217,151,43,0.25)]">
-          {/* Close Button */}
-          <button
-            onClick={handleClose}
-            className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/70 hover:bg-black text-white/80 hover:text-white flex items-center justify-center border border-white/10 transition-all cursor-pointer"
-            aria-label="Close Popup"
-          >
-            <span className="material-symbols-outlined text-lg">close</span>
-          </button>
+      <Modal isOpen={isOpen} onClose={handleClose} maxWidth="max-w-[440px]" ariaLabel={event.title}>
+        {/* Image banner */}
+        <div className="relative h-[180px] sm:h-[210px] w-full overflow-hidden">
+          <img
+            src={event.imageUrl}
+            alt={event.title}
+            className="h-full w-full object-cover animate-[popupZoom_8s_ease-out_forwards]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#101010] via-[#101010]/20 to-black/30" />
 
-          {/* Top Image Banner */}
-          <div className="relative h-[200px] w-full overflow-hidden bg-black">
-            <img
-              src={event.imageUrl}
-              alt={event.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-black/40" />
-
-            <div className="absolute top-4 left-4">
-              <span className="bg-primary text-black font-impact text-xs uppercase tracking-wider px-3.5 py-1 rounded-full font-bold shadow-md">
-                Featured Event
-              </span>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="p-6 sm:p-7 space-y-4">
-            <div>
-              <div className="flex items-center gap-3 text-xs text-primary font-inter font-medium mb-1.5">
-                <span>{event.dateString || "Upcoming Event"}</span>
-                <span>•</span>
-                <span>{event.timeString}</span>
-              </div>
-
-              <h3 className="text-2xl sm:text-3xl font-impact text-white uppercase tracking-tight leading-tight">
-                {event.title}
-              </h3>
-
-              <p className="text-xs sm:text-sm text-white/70 font-inter mt-2 line-clamp-3 leading-relaxed">
-                {event.description}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3 pt-2">
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  setIsRegisterModalOpen(true);
-                }}
-                className="flex-1 py-3 px-5 rounded-xl bg-primary hover:bg-primary-hover text-black font-inter font-bold text-xs uppercase tracking-wider transition-all shadow-lg cursor-pointer"
-              >
-                Register Now ({event.remainingSpots} spots)
-              </button>
-
-              <Link
-                href={`/events/${event.slug}`}
-                onClick={handleClose}
-                className="py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white font-inter font-semibold text-xs uppercase tracking-wider transition-all border border-white/10"
-              >
-                Details
-              </Link>
-            </div>
-          </div>
+          <img
+            src="/logo.png"
+            alt="Get Fit"
+            className="absolute top-3.5 left-4 h-10 w-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
+          />
         </div>
-      </div>
 
-      {isRegisterModalOpen && (
-        <EventRegistrationModal
-          isOpen={true}
-          onClose={() => setIsRegisterModalOpen(false)}
-          eventTitle={event.title}
-          eventDate={`${event.dateString || ""} • ${event.timeString}`}
-        />
-      )}
+        {/* Content */}
+        <div className="px-6 pb-6 sm:px-7 sm:pb-7 -mt-6 relative">
+          <h3 className="font-impact text-[28px] sm:text-[32px] uppercase leading-[1.02] tracking-tight text-white text-balance">
+            {event.title}
+          </h3>
+
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-inter text-xs text-white/60">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[16px] text-primary">calendar_today</span>
+              {event.dateString || "Upcoming"}
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[16px] text-primary">schedule</span>
+              {event.timeString}
+            </span>
+            {event.location && (
+              <span className="inline-flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[16px] text-primary">location_on</span>
+                {event.location}
+              </span>
+            )}
+          </div>
+
+          <p className="mt-4 font-inter text-sm leading-relaxed text-white/65 line-clamp-3">
+            {event.description}
+          </p>
+
+          <div className="mt-6 flex items-center gap-3">
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                setIsRegisterModalOpen(true);
+              }}
+              className="group flex-1 inline-flex items-center justify-center gap-2 rounded-[9999px] bg-primary px-5 py-3 font-inter text-[13px] font-semibold text-black shadow-[0_8px_24px_-8px_rgba(217,151,43,0.6)] transition-all duration-300 hover:bg-primary-hover hover:shadow-[0_10px_30px_-8px_rgba(217,151,43,0.8)] active:scale-[0.98] cursor-pointer"
+            >
+              Reserve my spot
+              <span className="material-symbols-outlined text-[18px] transition-transform duration-300 group-hover:translate-x-0.5">
+                arrow_forward
+              </span>
+            </button>
+
+            <Link
+              href={`/events/${event.slug}`}
+              onClick={handleClose}
+              className="rounded-[9999px] border border-white/15 px-5 py-3 font-inter text-[13px] font-medium text-white/80 transition-colors duration-300 hover:border-white/30 hover:bg-white/5 hover:text-white"
+            >
+              Details
+            </Link>
+          </div>
+
+          <p className="mt-3 text-center font-inter text-[11px] text-white/45">
+            <span className="text-primary font-semibold">{event.remainingSpots}</span> spots remaining
+          </p>
+        </div>
+      </Modal>
+
+      <EventRegistrationModal
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+        eventTitle={event.title}
+        eventDate={`${event.dateString || ""} • ${event.timeString}`}
+      />
     </>
   );
 }

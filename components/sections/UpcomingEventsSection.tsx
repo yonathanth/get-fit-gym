@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import ScrollReveal from "@/components/ui/ScrollReveal";
+import { Section, SectionHeading } from "@/components/ui/Section";
 
 export interface UpcomingEventHomeItem {
   id: string;
@@ -23,63 +24,60 @@ export default function UpcomingEventsSection({ events = [] }: UpcomingEventsSec
   if (!events || events.length === 0) return null;
 
   return (
-    <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-16 sm:py-20 md:py-24">
+    <Section>
       <ScrollReveal direction="up" delay={0.1}>
-        <h2 className="text-3xl sm:text-4xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-8 sm:mb-12 text-center">
-          Upcoming <span className="text-primary">Events</span>
-        </h2>
+        <SectionHeading title="Upcoming" accent="Events" className="mb-10 sm:mb-14" />
       </ScrollReveal>
 
-      {/* Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 items-stretch">
         {events.slice(0, 3).map((event, index) => (
-          <ScrollReveal
-            key={event.id}
-            direction="up"
-            delay={0.15 + index * 0.1}
-            className="h-full"
-          >
-            <div className="group h-full rounded-[24px] sm:rounded-[28px] border border-white/10 hover:border-primary/40 bg-[#121212] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col justify-between shine-hover">
-              
-              {/* Event Image */}
-              <div className="relative h-[210px] w-full overflow-hidden bg-black/40">
+          <ScrollReveal key={event.id} direction="up" delay={0.15 + index * 0.1} className="h-full">
+            <Link
+              href={`/events/${event.slug}`}
+              className="group flex h-full flex-col overflow-hidden rounded-[24px] sm:rounded-[28px] border border-white/10 bg-[#111] shadow-[0_25px_60px_-30px_rgba(0,0,0,0.9)] transition-[border-color,transform,box-shadow] duration-500 ease-out hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_30px_60px_-25px_rgba(0,0,0,0.95),0_0_40px_-20px_rgba(217,151,43,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              {/* Image */}
+              <div className="relative h-[200px] sm:h-[210px] w-full overflow-hidden bg-black/40">
                 <img
-                  src={event.imageUrl || "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop&q=80"}
+                  src={event.imageUrl || "/images/hero/dsc00738.webp"}
                   alt={event.title}
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.06]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-[#111]/10 to-transparent" />
+
+                {/* Date, sitting directly on the image just above the title */}
+                <span className="absolute bottom-2 left-6 sm:left-7 inline-flex items-center gap-1.5 font-inter text-xs font-medium text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]">
+                  <span className="material-symbols-outlined text-[15px] text-primary">calendar_today</span>
+                  {event.dateString || "Upcoming"}
+                </span>
               </div>
 
-              {/* Event Details */}
-              <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-5">
-                <div>
-                  <div className="flex items-center justify-between text-xs font-inter text-primary mb-2 font-medium">
-                    <span>{event.dateString || "Upcoming"}</span>
-                    <span className="text-white/50">{event.remainingSpots} spots</span>
-                  </div>
+              {/* Details */}
+              <div className="flex flex-1 flex-col p-6 sm:p-7 pt-4 sm:pt-5">
+                <h3 className="font-impact text-[26px] sm:text-[28px] uppercase leading-[1.05] tracking-tight text-white text-balance">
+                  {event.title}
+                </h3>
+                <p className="mt-3 font-inter text-sm leading-relaxed text-white/60 line-clamp-2">
+                  {event.description}
+                </p>
 
-                  <h3 className="text-2xl sm:text-3xl font-impact text-white leading-[1.1] uppercase tracking-wide group-hover:text-primary transition-colors mb-3">
-                    {event.title}
-                  </h3>
-
-                  <p className="text-xs sm:text-sm text-white/70 font-inter leading-relaxed line-clamp-2">
-                    {event.description}
-                  </p>
+                <div className="mt-auto pt-6 flex items-center justify-between gap-4">
+                  <span className="font-inter text-xs text-white/50">
+                    <span className="font-semibold text-primary">{event.remainingSpots}</span> spots left
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 font-inter text-[13px] font-semibold text-white transition-colors duration-300 group-hover:text-primary">
+                    View details
+                    <span className="material-symbols-outlined text-[18px] transition-transform duration-300 group-hover:translate-x-1">
+                      arrow_forward
+                    </span>
+                  </span>
                 </div>
-
-                {/* Card Action */}
-                <Link
-                  href={`/events/${event.slug}`}
-                  className="w-full py-2.5 px-5 rounded-xl bg-white/5 hover:bg-primary hover:text-black text-white/80 font-inter font-semibold text-xs uppercase tracking-wider transition-all duration-200 block text-center border border-white/10"
-                >
-                  View Event Details →
-                </Link>
               </div>
-            </div>
+            </Link>
           </ScrollReveal>
         ))}
       </div>
-    </section>
+    </Section>
   );
 }

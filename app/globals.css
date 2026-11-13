@@ -5,6 +5,7 @@
 @theme inline {
   /* Custom Colors */
   --color-primary: #D9972B;
+  --color-primary-hover: #E8AC48;
   --color-on-primary: #000000;
   --color-background: #0A0A0A;
   --color-surface: #141313;
@@ -95,6 +96,85 @@ body {
 
 .text-glow {
   text-shadow: 0 0 24px rgba(217, 151, 43, 0.45);
+}
+
+/* Animated gold sheen sweeping across gradient text */
+@keyframes textSheen {
+  0% { background-position: 200% 50%; }
+  100% { background-position: -200% 50%; }
+}
+
+.text-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    #b8761a 0%,
+    #d9972b 30%,
+    #ffe2a8 45%,
+    #d9972b 60%,
+    #b8761a 100%
+  );
+  background-size: 250% 100%;
+  /* background-clip:text only paints inside the box; slanted/italic glyphs
+     (the T and S lean past the advance width) overhang it and get cut.
+     Pad the box out, then pull the layout back so spacing is unchanged. */
+  display: inline-block;
+  padding-right: 0.32em;
+  margin-right: -0.32em;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 0 18px rgba(217, 151, 43, 0.35));
+  animation: textSheen 6s linear infinite;
+}
+
+/* Soft top-to-bottom fade on headline text */
+.text-fade {
+  background-image: linear-gradient(180deg, #ffffff 30%, rgba(255, 255, 255, 0.72) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Gradient hairline border (apply to a wrapper with padding: 1px) */
+.gradient-border {
+  background: linear-gradient(
+    140deg,
+    rgba(217, 151, 43, 0.55) 0%,
+    rgba(255, 255, 255, 0.08) 35%,
+    rgba(255, 255, 255, 0.04) 65%,
+    rgba(217, 151, 43, 0.35) 100%
+  );
+}
+
+@keyframes playRing {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+.animate-play-ring {
+  animation: playRing 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+}
+
+.animate-play-ring-delayed {
+  animation: playRing 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) 1.2s infinite;
+}
+
+/* Slow settle-in zoom for popup banner images */
+@keyframes popupZoom {
+  from { transform: scale(1.1); }
+  to { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-shimmer,
+  .animate-play-ring,
+  .animate-play-ring-delayed,
+  .animate-pulse-glow,
+  .animate-ripple {
+    animation: none;
+  }
 }
 
 .font-manrope {

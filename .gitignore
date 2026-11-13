@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# raw full-size photos (optimised copies live in public/images)
+/photo-originals/

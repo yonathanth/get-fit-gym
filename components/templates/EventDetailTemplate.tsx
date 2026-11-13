@@ -34,13 +34,13 @@ export default function EventDetailTemplate({ event }: EventDetailTemplateProps)
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const galleryList = event.galleryUrls || event.gallery || [
-    event.imageUrl || "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=80"
+    event.imageUrl || "/images/hero/dsc00738.webp"
   ];
 
   const headingImages = event.headingImages || [
-    galleryList[0] || event.imageUrl || "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop&q=80",
-    galleryList[1] || "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&h=500&fit=crop&q=80",
-    galleryList[2] || "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&h=500&fit=crop&q=80"
+    galleryList[0] || event.imageUrl || "/images/facilities/dsc00737.webp",
+    galleryList[1] || "/images/hero/dsc00690.webp",
+    galleryList[2] || "/images/hero/dsc00725.webp"
   ];
 
   const displayDate = event.dateString || event.date || "Upcoming Event";

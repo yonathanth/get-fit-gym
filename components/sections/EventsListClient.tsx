@@ -40,7 +40,7 @@ export default function EventsListClient({ events }: EventsListClientProps) {
               {/* Clean Event Image Banner */}
               <div className="relative h-[210px] sm:h-[230px] w-full overflow-hidden bg-black/40">
                 <img
-                  src={event.imageUrl || event.galleryUrls[0] || "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=80"}
+                  src={event.imageUrl || event.galleryUrls[0] || "/images/hero/dsc00738.webp"}
                   alt={event.title}
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />

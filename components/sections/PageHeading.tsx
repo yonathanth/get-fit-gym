@@ -1,130 +1,99 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface PageHeadingProps {
   title: string;
   subtitle?: string;
+  /** Word(s) in the title to render in gold. Defaults to the last word. */
   highlightWord?: string;
   images?: string[]; // Array of image URLs for the grid
 }
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+function splitTitle(title: string, highlightWord?: string): [string, string, string] {
+  if (highlightWord && title.includes(highlightWord)) {
+    const i = title.indexOf(highlightWord);
+    return [title.slice(0, i), highlightWord, title.slice(i + highlightWord.length)];
+  }
+  const i = title.lastIndexOf(" ");
+  return i === -1 ? ["", title, ""] : [title.slice(0, i + 1), title.slice(i + 1), ""];
+}
+
+function Photo({ src, index, className = "" }: { src: string; index: number; className?: string }) {
+  const reduceMotion = useReducedMotion();
+  return (
+    <motion.div
+      initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 1.04 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.9, delay: 0.1 + index * 0.12, ease: EASE }}
+      className={`group relative overflow-hidden ${className}`}
+    >
+      <img
+        src={src}
+        alt=""
+        className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+      />
+    </motion.div>
+  );
+}
+
 export default function PageHeading({ title, subtitle, highlightWord, images = [] }: PageHeadingProps) {
-  // If there's a highlight word, split the title and highlight it
-  const renderTitle = () => {
-    if (highlightWord && title.includes(highlightWord)) {
-      const parts = title.split(highlightWord);
-      return (
-        <>
-          {parts[0]}
-          <span className="text-primary">{highlightWord}</span>
-          {parts[1]}
-        </>
-      );
-    }
-    return title;
-  };
+  const [before, accent, after] = splitTitle(title, highlightWord);
 
   return (
-    <section className="w-full px-4 sm:px-6 py-6 sm:py-8 md:py-12 min-h-[460px] sm:min-h-[520px] md:h-[calc(100vh-72px)] relative">
-      <div className="max-w-[1200px] mx-auto h-full">
-        <div className="w-full h-full rounded-[24px] sm:rounded-[28px] md:rounded-[32px] overflow-hidden relative border border-white/5 bg-background shadow-2xl">
-          
-          {/* Mobile All-3-Photos Mosaic Grid (< md): 2 Upper, 1 Lower */}
-          {images.length > 0 && (
-            <div className="absolute inset-0 flex flex-col gap-2.5 p-2 sm:p-3 md:hidden">
-              {/* Top 2 Photos - Side by Side */}
-              <div className="flex-1 grid grid-cols-2 gap-2.5">
-                {images[1] && (
-                  <div className="relative overflow-hidden rounded-[14px] group">
-                    <img
-                      src={images[1]}
-                      alt=""
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                    />
-                  </div>
-                )}
-                {images[2] && (
-                  <div className="relative overflow-hidden rounded-[14px] group">
-                    <img
-                      src={images[2]}
-                      alt=""
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                    />
-                  </div>
-                )}
+    <section className="relative w-full px-5 sm:px-6 lg:px-8 pt-4 pb-6 sm:pt-6 sm:pb-8 lg:pb-10 h-[calc(100svh-72px)] min-h-[480px] sm:min-h-[540px] max-h-[960px]">
+      <div className="mx-auto h-full max-w-[1280px]">
+        <div className="gradient-border h-full rounded-[24px] sm:rounded-[28px] lg:rounded-[32px] p-px shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)]">
+          <div className="relative h-full w-full overflow-hidden rounded-[23px] sm:rounded-[27px] lg:rounded-[31px] bg-background">
+            {/* Mobile mosaic (< md): two on top, one wide below */}
+            {images.length > 0 && (
+              <div className="absolute inset-0 flex flex-col gap-2 p-2 sm:gap-2.5 sm:p-2.5 md:hidden">
+                <div className="grid flex-1 grid-cols-2 gap-2 sm:gap-2.5">
+                  {images[1] && <Photo src={images[1]} index={1} className="rounded-[16px]" />}
+                  {images[2] && <Photo src={images[2]} index={2} className="rounded-[16px]" />}
+                </div>
+                <Photo src={images[0]} index={0} className="flex-[1.2] rounded-[18px]" />
               </div>
+            )}
 
-              {/* Bottom Photo - Full Width */}
-              <div className="relative flex-[1.2] overflow-hidden rounded-[16px] group">
-                <img
-                  src={images[0]}
-                  alt=""
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
+            {/* Desktop mosaic (md+): one tall on the left, two stacked on the right */}
+            {images.length > 0 && (
+              <div className="absolute inset-0 hidden gap-3 p-3 md:flex lg:gap-4 lg:p-4">
+                <Photo src={images[0]} index={0} className="flex-1 rounded-[20px] lg:rounded-[24px]" />
+                <div className="flex flex-1 flex-col gap-3 lg:gap-4">
+                  {images[1] && <Photo src={images[1]} index={1} className="flex-1 rounded-[20px] lg:rounded-[24px]" />}
+                  {images[2] && <Photo src={images[2]} index={2} className="flex-1 rounded-[20px] lg:rounded-[24px]" />}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Desktop All-3-Photos Mosaic Grid (md+) */}
-          {images.length > 0 && (
-            <div className="absolute inset-0 hidden md:flex gap-4 md:gap-5">
-              {/* Large card - left side, spans full height */}
-              <div className="relative flex-1 overflow-hidden rounded-[16px] md:rounded-[20px] group cursor-pointer">
-                <img
-                  src={images[0]}
-                  alt=""
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                />
-              </div>
-              
-              {/* Right side - two stacked cards */}
-              <div className="flex-1 flex flex-col gap-4 md:gap-5">
-                {/* Top right card */}
-                {images[1] && (
-                  <div className="relative flex-1 overflow-hidden rounded-[16px] md:rounded-[20px] group cursor-pointer">
-                    <img
-                      src={images[1]}
-                      alt=""
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                    />
-                  </div>
+            {/* Readability overlays: strong at the bottom, plus a soft left-side wash for the text */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
+
+            {/* Text, bottom-left */}
+            <div className="pointer-events-none relative z-10 flex h-full flex-col justify-end px-5 pb-7 sm:px-8 sm:pb-10 lg:px-12 lg:pb-14">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.35, ease: EASE }}
+                className="max-w-3xl"
+              >
+                <h1 className="mb-3 font-impact italic uppercase leading-[0.98] tracking-tight text-[clamp(2.6rem,7.5vw,6rem)] text-balance">
+                  {before && <span className="text-fade">{before}</span>}
+                  {/* .text-shimmer pads its right edge so the slanted last glyph is not clipped */}
+                  <span className="text-shimmer">{accent}</span>
+                  {after && <span className="text-fade">{after}</span>}
+                </h1>
+                {subtitle && (
+                  <p className="max-w-2xl font-inter text-[15px] leading-relaxed text-white/80 sm:text-base lg:text-lg text-pretty">
+                    {subtitle}
+                  </p>
                 )}
-                
-                {/* Bottom right card */}
-                {images[2] && (
-                  <div className="relative flex-1 overflow-hidden rounded-[16px] md:rounded-[20px] group cursor-pointer">
-                    <img
-                      src={images[2]}
-                      alt=""
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                    />
-                  </div>
-                )}
-              </div>
+              </motion.div>
             </div>
-          )}
-          
-          {/* Gradient Overlay - dark at bottom, transparent at top to show photos */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/65 to-transparent pointer-events-none" />
-          
-          {/* Content - Bottom Left */}
-          <div className="relative h-full min-h-[420px] sm:min-h-[480px] md:min-h-0 px-5 sm:px-8 md:px-12 pb-8 sm:pb-12 md:pb-16 flex flex-col justify-end pointer-events-none z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="max-w-3xl"
-            >
-              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-impact text-primary leading-[1.05] tracking-tight uppercase mb-2 sm:mb-3 italic">
-                {renderTitle()}
-              </h1>
-              {subtitle && (
-                <p className="text-sm sm:text-base md:text-xl text-white/90 font-inter leading-relaxed max-w-2xl">
-                  {subtitle}
-                </p>
-              )}
-            </motion.div>
           </div>
         </div>
       </div>

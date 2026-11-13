@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ScrollReveal from "@/components/ui/ScrollReveal";
+import Modal from "@/components/ui/Modal";
 
 export interface TrainerOption {
   id: string;
@@ -51,6 +52,11 @@ export default function RegisterFormClient({ trainers }: RegisterFormClientProps
   });
 
   const [activeTrainerModal, setActiveTrainerModal] = useState<TrainerOption | null>(null);
+  // Keep the last opened trainer so the popup content stays visible during its close animation
+  const [shownTrainer, setShownTrainer] = useState<TrainerOption | null>(null);
+  if (activeTrainerModal && activeTrainerModal !== shownTrainer) {
+    setShownTrainer(activeTrainerModal);
+  }
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -502,51 +508,49 @@ export default function RegisterFormClient({ trainers }: RegisterFormClientProps
       </section>
 
       {/* Trainer Profile Details Pop-up Modal */}
-      {activeTrainerModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-lg bg-surface border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/10">
-              <div className="flex items-center gap-3.5">
-                <img
-                  src={activeTrainerModal.imageUrl || activeTrainerModal.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=800&fit=crop&q=80"}
-                  alt={activeTrainerModal.name}
-                  className="w-14 h-14 rounded-full object-cover border-2 border-primary"
-                />
-                <div>
-                  <h3 className="text-2xl font-impact text-white uppercase italic">{activeTrainerModal.name}</h3>
-                  <p className="text-xs text-primary font-inter font-semibold">{activeTrainerModal.role}</p>
-                </div>
+      <Modal
+        isOpen={!!activeTrainerModal}
+        onClose={() => setActiveTrainerModal(null)}
+        maxWidth="max-w-lg"
+        ariaLabel={shownTrainer?.name}
+        panelClassName="p-6 sm:p-8"
+      >
+        {shownTrainer && (
+            <>
+            <div className="flex items-center gap-4 pb-5 mb-6 border-b border-white/10 pr-10">
+              <img
+                src={shownTrainer.imageUrl || shownTrainer.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=800&fit=crop&q=80"}
+                alt={shownTrainer.name}
+                className="w-16 h-16 rounded-[9999px] object-cover ring-2 ring-primary/70 ring-offset-2 ring-offset-[#101010]"
+              />
+              <div>
+                <h3 className="text-[28px] leading-none font-impact text-white uppercase italic">{shownTrainer.name}</h3>
+                <p className="mt-1.5 text-xs text-primary font-inter font-semibold tracking-wide">{shownTrainer.role}</p>
               </div>
-              <button
-                onClick={() => setActiveTrainerModal(null)}
-                className="p-1 rounded-lg text-white/60 hover:text-white cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-xl">close</span>
-              </button>
             </div>
 
             <div className="space-y-5 text-xs font-inter">
               <div>
                 <span className="text-white/50 uppercase tracking-wider block font-semibold mb-1">About Coach</span>
-                <p className="text-sm text-white/80 leading-relaxed">{activeTrainerModal.fullBio || activeTrainerModal.bio}</p>
+                <p className="text-sm text-white/80 leading-relaxed">{shownTrainer.fullBio || shownTrainer.bio}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-[#0A0A0A] border border-white/5">
                 <div>
                   <span className="text-white/50 block mb-1">Experience</span>
-                  <span className="text-primary font-impact text-lg">{activeTrainerModal.experienceText || `${activeTrainerModal.experience || "5+ Years"}`}</span>
+                  <span className="text-primary font-impact text-lg">{shownTrainer.experienceText || `${shownTrainer.experience || "5+ Years"}`}</span>
                 </div>
                 <div>
                   <span className="text-white/50 block mb-1">Role</span>
-                  <span className="text-white font-medium text-xs">{activeTrainerModal.role}</span>
+                  <span className="text-white font-medium text-xs">{shownTrainer.role}</span>
                 </div>
               </div>
 
-              {activeTrainerModal.certifications && activeTrainerModal.certifications.length > 0 && (
+              {shownTrainer.certifications && shownTrainer.certifications.length > 0 && (
                 <div>
                   <span className="text-white/50 uppercase tracking-wider block font-semibold mb-2">Certifications & Credentials</span>
                   <ul className="space-y-1.5">
-                    {activeTrainerModal.certifications.map((cert, idx) => (
+                    {shownTrainer.certifications.map((cert, idx) => (
                       <li key={idx} className="flex items-center gap-2 text-white/80">
                         <span className="material-symbols-outlined text-primary text-sm">verified</span>
                         <span>{cert}</span>
@@ -560,7 +564,7 @@ export default function RegisterFormClient({ trainers }: RegisterFormClientProps
                 <button
                   type="button"
                   onClick={() => setActiveTrainerModal(null)}
-                  className="px-4 py-2 rounded-xl text-white/60 hover:text-white cursor-pointer"
+                  className="px-5 py-2.5 rounded-[9999px] border border-white/15 font-inter text-[13px] font-medium text-white/70 hover:text-white hover:border-white/30 hover:bg-white/5 transition-colors cursor-pointer"
                 >
                   Close
                 </button>
@@ -568,18 +572,21 @@ export default function RegisterFormClient({ trainers }: RegisterFormClientProps
                 <button
                   type="button"
                   onClick={() => {
-                    setFormData({ ...formData, selectedTrainer: activeTrainerModal.name });
+                    setFormData({ ...formData, selectedTrainer: shownTrainer.name });
                     setActiveTrainerModal(null);
                   }}
-                  className="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-black font-impact text-base uppercase tracking-wider cursor-pointer"
+                  className="group inline-flex items-center gap-2 px-6 py-2.5 rounded-[9999px] bg-primary hover:bg-primary-hover text-black font-inter text-[13px] font-semibold shadow-[0_8px_24px_-8px_rgba(217,151,43,0.6)] transition-all active:scale-[0.98] cursor-pointer"
                 >
-                  Select This Coach
+                  Select this coach
+                  <span className="material-symbols-outlined text-[18px] transition-transform duration-300 group-hover:translate-x-0.5">
+                    arrow_forward
+                  </span>
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </Modal>
     </>
   );
 }

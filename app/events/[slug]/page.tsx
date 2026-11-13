@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { eventDisplayDate } from "@/lib/format";
 import EventDetailTemplate from "@/components/templates/EventDetailTemplate";
 
 export const dynamic = "force-dynamic";
@@ -19,5 +20,5 @@ export default async function DynamicEventPage({
     notFound();
   }
 
-  return <EventDetailTemplate event={event} />;
+  return <EventDetailTemplate event={{ ...event, dateString: eventDisplayDate(event.eventDate, event.dateString) }} />;
 }

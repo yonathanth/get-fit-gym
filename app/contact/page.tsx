@@ -3,17 +3,24 @@
 import CTASection from "@/components/sections/CTASection";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import SpotlightEffect from "@/components/ui/SpotlightEffect";
+import ContactFormSection from "@/components/sections/ContactFormSection";
+import { useSettings } from "@/components/SettingsProvider";
+import { telHref } from "@/lib/settings-shared";
 
 export default function ContactPage() {
+  const settings = useSettings();
+  const phones = [settings.phone_primary, settings.phone_secondary].filter(Boolean);
+
   return (
     <main className="w-full min-h-screen bg-background relative overflow-x-clip pt-12 sm:pt-16 md:pt-20">
       <SpotlightEffect />
 
       {/* Header */}
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 mb-12 sm:mb-16">
+      <div className="max-w-[1280px] mx-auto px-5 sm:px-6 lg:px-8 mb-12 sm:mb-16">
         <ScrollReveal direction="up" delay={0.1}>
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-impact text-primary leading-[1.1] tracking-tight uppercase mb-3 sm:mb-4 italic text-center">
-            Contact Us
+          <h1 className="font-impact italic uppercase leading-[0.98] tracking-tight text-[clamp(2.6rem,7.5vw,5.5rem)] text-balance text-center mb-3 sm:mb-4">
+            <span className="text-fade">Contact </span>
+            <span className="text-shimmer">Us</span>
           </h1>
           <p className="text-sm sm:text-base md:text-lg text-secondary font-inter text-center max-w-2xl mx-auto leading-relaxed">
             Get in touch with our team. We&apos;re here to answer your questions, schedule a tour, or help you start your fitness journey.
@@ -22,7 +29,7 @@ export default function ContactPage() {
       </div>
 
       {/* Contact Information & Map */}
-      <section className="max-w-[1200px] mx-auto px-4 sm:px-6 pb-16 sm:pb-24">
+      <section className="max-w-[1280px] mx-auto px-5 sm:px-6 lg:px-8 pb-16 sm:pb-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-stretch">
           {/* Left - Contact Info */}
           <div className="space-y-6 sm:space-y-8 flex flex-col justify-center">
@@ -52,8 +59,7 @@ export default function ContactPage() {
                       Location
                     </h3>
                     <p className="text-secondary font-inter text-[11px] sm:text-xs leading-relaxed">
-                      CMC Michael, Addis Ababa<br />
-                      Ethiopia
+                      {settings.location_address}
                     </p>
                   </div>
                 </div>
@@ -72,12 +78,11 @@ export default function ContactPage() {
                       Phone
                     </h3>
                     <p className="text-secondary font-inter text-[11px] sm:text-xs leading-relaxed">
-                      <a href="tel:+251911415862" className="hover:text-primary transition-colors block">
-                        0911-415-862
-                      </a>
-                      <a href="tel:+251992222224" className="hover:text-primary transition-colors block">
-                        0992 222 224
-                      </a>
+                      {phones.map((phone) => (
+                        <a key={phone} href={telHref(phone)} className="hover:text-primary transition-colors block">
+                          {phone}
+                        </a>
+                      ))}
                     </p>
                   </div>
                 </div>
@@ -96,8 +101,8 @@ export default function ContactPage() {
                       Email
                     </h3>
                     <p className="text-secondary font-inter text-[11px] sm:text-xs leading-relaxed truncate max-w-full">
-                      <a href="mailto:getfitt26@gmail.com" className="hover:text-primary transition-colors block truncate">
-                        getfitt26@gmail.com
+                      <a href={`mailto:${settings.email_address}`} className="hover:text-primary transition-colors block truncate">
+                        {settings.email_address}
                       </a>
                     </p>
                   </div>
@@ -117,7 +122,7 @@ export default function ContactPage() {
                       Opening Hours
                     </h3>
                     <p className="text-secondary font-inter text-[11px] sm:text-xs leading-relaxed">
-                      Mon - Sun: 5:00 AM - 10:00 PM
+                      {settings.operating_hours}
                     </p>
                   </div>
                 </div>
@@ -130,7 +135,7 @@ export default function ContactPage() {
             <ScrollReveal direction="right" delay={0.2} className="h-full">
               <div className="relative rounded-[20px] sm:rounded-[28px] md:rounded-[32px] border border-white/10 hover:border-primary/40 overflow-hidden h-[300px] sm:h-[380px] lg:h-full min-h-[300px] sm:min-h-[380px] shadow-2xl bg-surface transition-all duration-300 group">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.5587636447195!2d38.7577!3d9.0320!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOcKwMDEnNTUuMiJOIDM4wrA0NSczMy4xIkU!5e0!3m2!1sen!2set!4v1234567890"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9561.670162080582!2d38.833645149030126!3d9.024009230029863!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b9b003ab50f1d%3A0x66f8f679ae063ad1!2sGET%20FIT%20GYM!5e1!3m2!1sen!2set!4v1794572490655!5m2!1sen!2set"
                   width="100%"
                   height="100%"
                   style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) contrast(90%) brightness(95%)" }}
@@ -146,8 +151,11 @@ export default function ContactPage() {
         </div>
       </section>
 
+      {/* Message form → admin Inquiries inbox */}
+      <ContactFormSection />
+
       {/* Social Media */}
-      <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-12 sm:py-20 border-t border-white/5">
+      <section className="max-w-[1280px] mx-auto px-5 sm:px-6 lg:px-8 py-12 sm:py-20 border-t border-white/5">
         <div className="text-center">
           <ScrollReveal direction="up" delay={0.1}>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-4 sm:mb-6">
@@ -161,7 +169,7 @@ export default function ContactPage() {
           <ScrollReveal direction="up" delay={0.2}>
             <div className="flex justify-center gap-4 sm:gap-6">
               <a
-                href="https://www.tiktok.com/@getfit.gym?_r=1&_d=emlg250de76mf3&sec_uid=MS4wLjABAAAAvBlVwdgWlgwuZAR7zeqbrktbvzDdN_AdTyf8dzhRc5YZhlAMUVvpQgMVS28ngCI2&share_author_id=7617383060232930322&sharer_language=en&source=h5_m&u_code=f2df05jabaidcj&item_author_type=1&utm_source=whatsapp&tt_from=whatsapp&enable_checksum=1&utm_medium=ios&share_link_id=862AD9C8-C905-4DF5-AC6A-089F06537298&user_id=7617383060232930322&sec_user_id=MS4wLjABAAAAvBlVwdgWlgwuZAR7zeqbrktbvzDdN_AdTyf8dzhRc5YZhlAMUVvpQgMVS28ngCI2&social_share_type=5&ug_btm=b8727,b0&utm_campaign=client_share&share_app_id=1233"
+                href={settings.tiktok_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/15 bg-surface/60 flex items-center justify-center text-white hover:text-primary hover:border-primary/40 hover:bg-surface transition-all duration-300 hover:scale-110 shadow-lg"
@@ -172,7 +180,7 @@ export default function ContactPage() {
                 </svg>
               </a>
               <a
-                href="https://www.linkedin.com/in/getfit-gym-6538333b7?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
+                href={settings.linkedin_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/15 bg-surface/60 flex items-center justify-center text-white hover:text-primary hover:border-primary/40 hover:bg-surface transition-all duration-300 hover:scale-110 shadow-lg"
@@ -183,7 +191,7 @@ export default function ContactPage() {
                 </svg>
               </a>
               <a
-                href="https://www.facebook.com/share/18TRbLvNPQ/?mibextid=wwXIfr"
+                href={settings.facebook_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/15 bg-surface/60 flex items-center justify-center text-white hover:text-primary hover:border-primary/40 hover:bg-surface transition-all duration-300 hover:scale-110 shadow-lg"
@@ -194,7 +202,7 @@ export default function ContactPage() {
                 </svg>
               </a>
               <a
-                href="https://youtube.com/@getfit-gym?si=Y5pWSp_Nz3bveXRo"
+                href={settings.youtube_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/15 bg-surface/60 flex items-center justify-center text-white hover:text-primary hover:border-primary/40 hover:bg-surface transition-all duration-300 hover:scale-110 shadow-lg"

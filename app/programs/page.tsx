@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import PageHeading from "@/components/sections/PageHeading";
 import MembershipPlansSection from "@/components/sections/MembershipPlansSection";
 import ClassesSection from "@/components/sections/ClassesSection";
@@ -6,6 +7,12 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+export const metadata: Metadata = {
+  title: "Programs & Membership",
+  description: "Personal training, group classes, medical fitness, nutrition coaching and membership plans at Get Fit Gym, Addis Ababa.",
+  alternates: { canonical: "/programs" },
+};
 
 export default async function ProgramsPage() {
   let programs: any[] = [];
@@ -34,9 +41,9 @@ export default async function ProgramsPage() {
         title="Programs & Memberships" 
         subtitle="Explore our science-backed training programs, 14 level-based group classes across 3 time-slots, and pre-opening membership packages."
         images={[
-          "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&h=1000&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=500&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&h=500&fit=crop&q=80"
+          "/images/others/dsc00727.webp",
+          "/images/hero/dsc00681.webp",
+          "/images/hero/dsc00723.webp"
         ]}
       />
       

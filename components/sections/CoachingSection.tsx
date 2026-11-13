@@ -94,9 +94,9 @@ export default function CoachingSection() {
             {/* Visual Side */}
             <div className="w-full lg:w-3/5 relative flex items-center justify-center overflow-hidden group self-stretch rounded-[32px] border border-white/5">
               <img
-                alt="Focused athlete training"
+                alt="Get Fit Gym coach"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuChyKVS4W15uWgUCuiM_MbCOT_67GdyHubm2mal44QNnUFZquiuwxU6xCfKt9Be8i3VSc5rEI4POSpQuOUYmwTexLoBWqZd635bUFAWCPVeecaanf-1SmobHLtrEO2WsFFd8LjMop8VU3tfyof_LYDs2lqlB04wxgQM0Eottn57_Qz3foiRLRoYlYYOH90GXvkAb39r2-kKj1vj4nzS3BOq82qFV6gCmMyrCWlADEaiGHmBuJoao3z6"
+                src="/images/trainers/dsc00613.webp"
               />
             </div>
           </div>

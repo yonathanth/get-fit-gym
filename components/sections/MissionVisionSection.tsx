@@ -4,11 +4,11 @@ import ScrollReveal from "@/components/ui/ScrollReveal";
 
 export default function MissionVisionSection() {
   return (
-    <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-16 sm:py-20 md:py-28">
+    <section className="max-w-[1280px] mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-28">
       <ScrollReveal direction="up" delay={0.1}>
-        <h2 className="text-3xl sm:text-4xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-8 sm:mb-12 text-center">
-          Mission & <span className="text-primary">Vision</span>
-        </h2>
+        <h2 className="font-impact uppercase tracking-tight leading-[1.02] text-[clamp(2.1rem,5.2vw,4rem)] text-balance mb-8 sm:mb-12 text-center">
+            <span className="text-fade">Mission & </span><span className="text-shimmer">Vision</span>
+          </h2>
       </ScrollReveal>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">

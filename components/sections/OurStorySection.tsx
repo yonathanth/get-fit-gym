@@ -6,7 +6,7 @@ export default function OurStorySection() {
   const highlights = [
     {
       title: "1,050 m² Life Fitness Area",
-      image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
+      image: "/images/hero/dsc00690.webp",
     },
     {
       title: "750 m² Wellness & Spa",
@@ -14,16 +14,16 @@ export default function OurStorySection() {
     },
     {
       title: "Sports Science Grounded",
-      image: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&q=80",
+      image: "/images/hero/dsc00725.webp",
     },
   ];
 
   return (
-    <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-16 sm:py-20 md:py-28">
+    <section className="max-w-[1280px] mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-28">
       <ScrollReveal direction="up" delay={0.1}>
-        <h2 className="text-3xl sm:text-4xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-8 sm:mb-12 text-center">
-          Our <span className="text-primary">Story</span>
-        </h2>
+        <h2 className="font-impact uppercase tracking-tight leading-[1.02] text-[clamp(2.1rem,5.2vw,4rem)] text-balance mb-8 sm:mb-12 text-center">
+            <span className="text-fade">Our </span><span className="text-shimmer">Story</span>
+          </h2>
       </ScrollReveal>
 
       <div className="flex flex-col lg:flex-row-reverse gap-8 sm:gap-12 lg:gap-16 items-center">

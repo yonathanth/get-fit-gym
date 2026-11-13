@@ -21,139 +21,6 @@ interface PlanItem {
   }[];
 }
 
-const DEFAULT_MEMBERSHIP_PLANS: Record<"Any Time (Regular)" | "Happy Hour (20% Off)", PlanItem[]> = {
-  "Any Time (Regular)": [
-    {
-      id: "gym-only-regular",
-      name: "Gym Only",
-      subtitle: "Full 1,050 m² training floor & level-based group classes",
-      isPopular: false,
-      pricing: {
-        "1-month": { price: "19,500 ETB", period: "/ month" },
-        "3-months": { price: "32,800 ETB", period: "/ 3 months" },
-        "6-months": { price: "49,140 ETB", period: "/ 6 months" },
-        "1-year": { price: "70,200 ETB", period: "/ year (Save 40%)" }
-      },
-      features: [
-        { included: true, text: "1,050 m² Life Fitness equipment access" },
-        { included: true, text: "14 level-based group fitness classes" },
-        { included: true, text: "Standard locker room & shower amenities" },
-        { included: true, text: "Detailed initial fitness assessment" },
-        { included: true, text: "Flexible 1, 3, 6 & 12 month payment options" },
-        { included: false, text: "Full 750 m² Spa & Moroccan bath access" },
-        { included: false, text: "Medical doctor & nutritionist consultation" }
-      ]
-    },
-    {
-      id: "gym-spa-regular",
-      name: "Gym With Spa",
-      subtitle: "All-inclusive training floor, group classes & luxury recovery center",
-      isPopular: true,
-      pricing: {
-        "1-month": { price: "27,495 ETB", period: "/ month" },
-        "3-months": { price: "38,844 ETB", period: "/ 3 months" },
-        "6-months": { price: "54,600 ETB", period: "/ 6 months" },
-        "1-year": { price: "77,200 ETB", period: "/ year (Save 40%)" }
-      },
-      features: [
-        { included: true, text: "Full 1,050 m² Life Fitness arena access" },
-        { included: true, text: "Unlimited 750 m² Spa, steam & sauna" },
-        { included: true, text: "Moroccan bath & massage therapy access" },
-        { included: true, text: "14 level-based group fitness activities" },
-        { included: true, text: "Detailed body composition scan & tracking" },
-        { included: true, text: "Nutritionist & medical doctor consultation" },
-        { included: true, text: "Priority executive locker & towel service" }
-      ]
-    },
-    {
-      id: "couple-regular",
-      name: "Couple Package (10% Off)",
-      subtitle: "Dual all-inclusive membership with 10% couples discount",
-      isPopular: false,
-      pricing: {
-        "1-month": { price: "49,530 ETB", period: "/ month" },
-        "3-months": { price: "69,920 ETB", period: "/ 3 months" },
-        "6-months": { price: "98,280 ETB", period: "/ 6 months" },
-        "1-year": { price: "138,996 ETB", period: "/ year (Save 40%)" }
-      },
-      features: [
-        { included: true, text: "2-person all-inclusive Gym & Spa pass" },
-        { included: true, text: "1,050 m² training area + 750 m² wellness center" },
-        { included: true, text: "Unlimited steam, sauna & Moroccan bath" },
-        { included: true, text: "14 level-based group classes for both" },
-        { included: true, text: "Dual body composition & health evaluations" },
-        { included: true, text: "Personalized nutrition strategies" },
-        { included: true, text: "Restaurant & beauty salon discounts" }
-      ]
-    }
-  ],
-  "Happy Hour (20% Off)": [
-    {
-      id: "gym-only-happy-hour",
-      name: "Gym Only (Happy Hour)",
-      subtitle: "Off-peak training floor access with 20% discount",
-      isPopular: false,
-      pricing: {
-        "1-month": { price: "15,600 ETB", period: "/ month" },
-        "3-months": { price: "26,208 ETB", period: "/ 3 months" },
-        "6-months": { price: "39,312 ETB", period: "/ 6 months" },
-        "1-year": { price: "56,160 ETB", period: "/ year (Save 40%)" }
-      },
-      features: [
-        { included: true, text: "Off-peak 1,050 m² Life Fitness area access" },
-        { included: true, text: "14 level-based group fitness classes" },
-        { included: true, text: "Standard locker room & shower amenities" },
-        { included: true, text: "Baseline fitness level assessment" },
-        { included: true, text: "Pre-opening discounts across all terms" },
-        { included: false, text: "Spa & Moroccan bath access" },
-        { included: false, text: "Medical doctor consultation" }
-      ]
-    },
-    {
-      id: "gym-spa-happy-hour",
-      name: "Gym With Spa (Happy Hour)",
-      subtitle: "Off-peak Gym & Spa luxury recovery with 20% savings",
-      isPopular: true,
-      pricing: {
-        "1-month": { price: "22,000 ETB", period: "/ month" },
-        "3-months": { price: "30,992 ETB", period: "/ 3 months" },
-        "6-months": { price: "43,680 ETB", period: "/ 6 months" },
-        "1-year": { price: "61,776 ETB", period: "/ year (Save 40%)" }
-      },
-      features: [
-        { included: true, text: "Off-peak 1,050 m² Life Fitness arena access" },
-        { included: true, text: "750 m² Spa, steam, sauna & Moroccan bath" },
-        { included: true, text: "Detailed body composition & health tracking" },
-        { included: true, text: "14 level-based group classes" },
-        { included: true, text: "Nutritionist consultation session" },
-        { included: true, text: "Priority executive locker & shower access" },
-        { included: true, text: "Flexible off-peak durations available" }
-      ]
-    },
-    {
-      id: "couple-happy-hour",
-      name: "Couple Happy Hour",
-      subtitle: "Off-peak dual Gym & Spa package with combined discounts",
-      isPopular: false,
-      pricing: {
-        "1-month": { price: "39,624 ETB", period: "/ month" },
-        "3-months": { price: "55,960 ETB", period: "/ 3 months" },
-        "6-months": { price: "78,624 ETB", period: "/ 6 months" },
-        "1-year": { price: "111,192 ETB", period: "/ year (Save 40%)" }
-      },
-      features: [
-        { included: true, text: "2-person off-peak Gym & Spa all-inclusive" },
-        { included: true, text: "Unlimited steam, sauna & Moroccan bath" },
-        { included: true, text: "Dual body composition assessments" },
-        { included: true, text: "14 level-based group classes for both" },
-        { included: true, text: "Nutrition consultation & dietary review" },
-        { included: true, text: "Restaurant & beauty salon discounts" },
-        { included: true, text: "Pre-opening discounts across all terms" }
-      ]
-    }
-  ]
-};
-
 interface MembershipPlansSectionProps {
   plans?: any[];
 }
@@ -169,14 +36,10 @@ export default function MembershipPlansSection({ plans = [] }: MembershipPlansSe
     "couple-happy-hour": "1-month",
   });
 
-  // If dynamic plans exist from database, map them:
-  let dynamicPlans = DEFAULT_MEMBERSHIP_PLANS;
-  if (plans && plans.length > 0) {
-    const regularDb = plans.filter((p) => p.category === "REGULAR");
-    const happyDb = plans.filter((p) => p.category === "HAPPY_HOUR");
-
-    if (regularDb.length > 0 || happyDb.length > 0) {
-      dynamicPlans = {
+  // Plans come only from the admin (active plans, grouped by category).
+  const regularDb = (plans ?? []).filter((p) => p.category === "REGULAR");
+  const happyDb = (plans ?? []).filter((p) => p.category === "HAPPY_HOUR");
+  const dynamicPlans: Record<"Any Time (Regular)" | "Happy Hour (20% Off)", PlanItem[]> = {
         "Any Time (Regular)": regularDb.map((p) => ({
           id: p.slug || p.id,
           name: p.name,
@@ -203,11 +66,11 @@ export default function MembershipPlansSection({ plans = [] }: MembershipPlansSe
           },
           features: (p.features || []).map((f: string) => ({ included: true, text: f })),
         })),
-      };
-    }
-  }
+  };
 
-  const currentPlans = dynamicPlans[activeTab] || DEFAULT_MEMBERSHIP_PLANS[activeTab];
+  const currentPlans = dynamicPlans[activeTab] ?? [];
+  // No active plans at all -> hide the section entirely
+  if (regularDb.length + happyDb.length === 0) return null;
 
   const handleDurationChange = (planId: string, duration: DurationOption) => {
     setSelectedDurations((prev) => ({
@@ -217,13 +80,13 @@ export default function MembershipPlansSection({ plans = [] }: MembershipPlansSe
   };
 
   return (
-    <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-16 sm:py-24">
+    <section className="max-w-[1280px] mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-28">
       <ScrollReveal direction="up" delay={0.1}>
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-3">
-            Membership <span className="text-primary">Plans</span>
+          <h2 className="font-impact uppercase tracking-tight leading-[1.02] text-[clamp(2.1rem,5.2vw,4rem)] text-balance mb-3">
+            <span className="text-fade">Membership </span><span className="text-shimmer">Plans</span>
           </h2>
-          <p className="text-xs sm:text-sm md:text-base text-white/70 font-inter">
+          <p className="text-sm sm:text-base text-white/65 font-inter leading-relaxed text-pretty">
             Family & Friends Pre-Opening Discount. Flexible options for 1 Year, 6 Months, 3 Months, 1 Month, and Day Pass.
           </p>
         </div>
@@ -257,6 +120,11 @@ export default function MembershipPlansSection({ plans = [] }: MembershipPlansSe
 
       {/* Pricing Cards Grid with Centered Bottom Row */}
       <div className="flex flex-wrap justify-center gap-6 lg:gap-8 items-stretch">
+        {currentPlans.length === 0 && (
+          <p className="py-10 text-center font-inter text-sm text-white/50">
+            No plans in this category right now. Check the other tab or contact us.
+          </p>
+        )}
         {currentPlans.map((plan, index) => {
           const currentDuration = selectedDurations[plan.id] || "1-month";
           const currentPricing = plan.pricing[currentDuration] || plan.pricing["1-month"];

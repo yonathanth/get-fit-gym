@@ -3,55 +3,42 @@
 import Link from "next/link";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 
-const events = [
-  {
-    id: "health-fitness-nutrition-seminar",
-    title: "Health, Fitness & Nutrition Seminar",
-    date: "February 2026",
-    description: "Our monthly seminar brought together health experts and members for comprehensive wellness guidance",
-    image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop&q=80"
-  },
-  {
-    id: "youth-sports-day",
-    title: "Youth Sports Day",
-    date: "January 2026",
-    description: "Young athletes showcased their skills in competitions, games, and team activities",
-    image: "https://images.unsplash.com/photo-1599447332490-d839c2a3f337?w=600&h=400&fit=crop&q=80"
-  },
-  {
-    id: "monthly-fitness-challenge",
-    title: "Monthly Fitness Challenge",
-    date: "December 2025",
-    description: "Members competed in challenging workouts and celebrated personal achievements together",
-    image: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=600&h=400&fit=crop&q=80"
-  }
-];
+export interface ShowcaseCardItem {
+  slug: string;
+  title: string;
+  eventDate: string;
+  description: string;
+  coverImageUrl: string;
+}
 
-export default function CommunityEventsSection() {
+/** Past community events, managed in the admin under Community. */
+export default function CommunityEventsSection({ showcases = [] }: { showcases?: ShowcaseCardItem[] }) {
+  if (showcases.length === 0) return null;
+
   return (
-    <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-16 sm:py-20 md:py-28">
+    <section className="max-w-[1280px] mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-28">
       <ScrollReveal direction="up" delay={0.1}>
-        <h2 className="text-3xl sm:text-4xl md:text-6xl font-impact text-white leading-[1.1] tracking-tight uppercase mb-8 sm:mb-12 text-center">
-          Community & <span className="text-primary">Events</span>
-        </h2>
+        <h2 className="font-impact uppercase tracking-tight leading-[1.02] text-[clamp(2.1rem,5.2vw,4rem)] text-balance mb-8 sm:mb-12 text-center">
+            <span className="text-fade">Community & </span><span className="text-shimmer">Events</span>
+          </h2>
       </ScrollReveal>
 
       {/* Events Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-        {events.map((event, index) => (
+        {showcases.map((event, index) => (
           <ScrollReveal
-            key={event.id}
+            key={event.slug}
             direction="up"
             delay={0.15 + index * 0.1}
           >
             <Link
-              href={`/showcase/${event.id}`}
+              href={`/showcase/${event.slug}`}
               className="group relative overflow-hidden rounded-[22px] sm:rounded-[28px] md:rounded-[32px] border border-white/10 hover:border-primary/40 bg-surface h-[380px] sm:h-[420px] md:h-[450px] block shine-hover shadow-xl transition-all duration-300"
             >
               {/* Image */}
               <div className="absolute inset-0">
                 <img
-                  src={event.image}
+                  src={event.coverImageUrl}
                   alt={event.title}
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                 />
@@ -68,7 +55,7 @@ export default function CommunityEventsSection() {
               {/* Content pinned at bottom */}
               <div className="relative h-full p-6 sm:p-8 flex flex-col justify-end pointer-events-none z-10">
                 <span className="text-xs font-inter font-semibold text-primary/90 mb-1 block">
-                  {event.date}
+                  {event.eventDate}
                 </span>
                 <h3 className="text-2xl sm:text-3xl font-impact text-primary leading-[1.1] tracking-tight uppercase mb-2 group-hover:text-white transition-colors">
                   {event.title}
