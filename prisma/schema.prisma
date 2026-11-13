@@ -216,3 +216,25 @@ model GymSetting {
   description String?
   updatedAt   DateTime @updatedAt
 }
+
+// Site-wide popup shown to website visitors. Managed in admin → Popups.
+// Only one popup is active at a time; startsAt/endsAt optionally limit when it shows.
+model SitePopup {
+  id        String    @id @default(cuid())
+  type      String    @default("ANNOUNCEMENT") // "EVENT" | "DISCOUNT" | "ANNOUNCEMENT"
+  title     String
+  message   String
+  imageUrl  String?
+  badge     String? // short highlight, e.g. "20% OFF"
+  promoCode String?
+  ctaLabel  String?
+  ctaUrl    String?
+  eventId   String? // UpcomingEvent shown when type is EVENT
+  startsAt  DateTime?
+  endsAt    DateTime?
+  isActive  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([isActive])
+}

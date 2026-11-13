@@ -140,11 +140,11 @@ export default function HeroSection() {
                     onClick={() => setIsPlaying(true)}
                     className="absolute inset-0 h-full w-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
                   >
-                    {/* Poster: compressed cover photo (public/images/video-cover.webp) */}
+                    {/* Poster: a frame from the tour video itself */}
                     <img
                       alt="Inside the Get Fit gym"
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
-                      src="/images/video-cover.webp"
+                      src={`https://image.mux.com/${MUX_PLAYBACK_ID}/thumbnail.webp?width=1080&time=3`}
                     />
 
                     {/* Cinematic overlays */}

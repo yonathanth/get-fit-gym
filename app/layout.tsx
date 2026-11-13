@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import EventPopupModal from "@/components/ui/EventPopupModal";
+import SitePopupModal from "@/components/ui/SitePopupModal";
 import { SettingsProvider } from "@/components/SettingsProvider";
 import { getGymSettings } from "@/lib/settings";
 import { SITE_URL } from "@/lib/site";
@@ -97,7 +97,7 @@ export default async function RootLayout({
           <Navbar />
           {children}
           <Footer settings={settings} />
-          <EventPopupModal />
+          <SitePopupModal />
         </SettingsProvider>
       </body>
     </html>
