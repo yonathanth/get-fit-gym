@@ -49,11 +49,11 @@ export default async function DynamicTeamMemberPage({
           {/* Left Column: Photo & Stats */}
           <div className="lg:col-span-5 space-y-6">
             <ScrollReveal direction="up" delay={0.2}>
-              <div className="relative overflow-hidden rounded-[28px] sm:rounded-[32px] border border-white/10 shadow-2xl bg-surface aspect-square">
+              <div className="relative overflow-hidden rounded-[28px] sm:rounded-[32px] border border-white/10 shadow-2xl bg-surface aspect-[4/5]">
                 <img
                   src={member.imageUrl}
                   alt={member.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-[center_85%]"
                 />
               </div>
             </ScrollReveal>
