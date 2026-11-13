@@ -238,3 +238,13 @@ model SitePopup {
 
   @@index([isActive])
 }
+
+// Images uploaded from the admin (e.g. popup banners), served at /api/media/<id>.
+// Stored in the database so both the admin and the website can read them.
+model MediaAsset {
+  id        String   @id @default(cuid())
+  mimeType  String
+  size      Int
+  data      Bytes
+  createdAt DateTime @default(now())
+}
